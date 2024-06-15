@@ -9,4 +9,7 @@ sealed class ScreenRoute(var route: String) {
 
     object Register: ScreenRoute("register")
 
+    object Search: ScreenRoute("SearchMap")
+
+
 }

@@ -10,6 +10,7 @@ import com.example.profile.ui.Screen.HomeScreen
 import com.example.profile.ui.Screen.LoginScreen
 import com.example.profile.ui.Screen.ProfileScreen
 import com.example.profile.ui.Screen.RegisterScreen
+import com.example.profile.ui.Screen.SearchScreen
 import com.example.profile.ui.Screen.SessionScreen
 
 @Composable
@@ -35,6 +36,9 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         }
         composable(route = ScreenRoute.Register.route) {
             RegisterScreen(viewModel, navController)
+        }
+        composable(route = ScreenRoute.Search.route) {
+            SearchScreen(viewModel, navController)
         }
     }
 }
