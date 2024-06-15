@@ -36,7 +36,7 @@ fun BottomNavigationBar(navController: NavController) {
             icon = { Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.Black) },
             label = { Text("Search", color = Color.Black) },
             selected = false,
-            onClick = { /* Manejar navegación */ }
+            onClick = { navController.navigate(ScreenRoute.Search.route) }
         )
         BottomNavigationItem(
             icon = { Icon(Icons.Filled.AccountCircle, contentDescription = "Profile", tint = Color.Black) },
