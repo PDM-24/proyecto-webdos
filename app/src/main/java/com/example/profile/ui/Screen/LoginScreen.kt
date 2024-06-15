@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.profile.MainViewModel
 import com.example.profile.R
+import com.example.profile.ui.navigation.ScreenRoute
 
 //import com.example.profile.ui.theme.SaborMapTheme
 //import com.pescsiete.sabormap.R
@@ -92,7 +93,7 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(80.dp))
             Button(
-                onClick = { },
+                onClick = {navController.navigate(ScreenRoute.Home.route) },
                 enabled = isLoginEnabled,
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
@@ -122,7 +123,7 @@ fun LoginScreen(
             Text(
                 text = "Register",
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable { /* Navegar a registro */ }
+                modifier = Modifier.clickable { navController.navigate(ScreenRoute.Register.route) }
             )
         }
     }

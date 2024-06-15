@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.profile.MainViewModel
+import com.example.profile.ui.navigation.ScreenRoute
 
 
 @Composable
@@ -107,7 +108,7 @@ fun RegisterScreen(viewModel: MainViewModel,
         )
 
         Button(
-            onClick = { /* Handle register logic */ },
+            onClick = { navController.navigate(ScreenRoute.Login.route) },
             shape = RoundedCornerShape(50),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEB5757)),
             modifier = Modifier
@@ -126,7 +127,7 @@ fun RegisterScreen(viewModel: MainViewModel,
             Text(
                 text = " Login",
                 color = Color(0xFFEB5757),
-                modifier = Modifier.clickable { navController.navigate("login") }
+                modifier = Modifier.clickable { navController.navigate(ScreenRoute.Login.route) }
             )
         }
     }
