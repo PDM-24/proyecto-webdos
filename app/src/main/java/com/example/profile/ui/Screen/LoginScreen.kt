@@ -53,7 +53,7 @@ fun LoginScreen(
             Text(
                 text = "Login",
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
+                color = Color(0xFFEB445B),
                 modifier = Modifier.align(Alignment.Start),
                 fontWeight = FontWeight.Bold,
                 fontSize = 30.sp
@@ -98,9 +98,9 @@ fun LoginScreen(
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFEB445B)),
+                    ,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isLoginEnabled) MaterialTheme.colorScheme.primary else Color.Gray,
+                    containerColor = if (isLoginEnabled) Color(0xFFEB445B) else Color(0xFFEB445B) ,
                     contentColor = Color.White
                 )
             ) {
