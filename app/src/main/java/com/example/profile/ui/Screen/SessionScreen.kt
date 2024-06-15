@@ -37,9 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.profile.MainViewModel
 import com.example.profile.R
-
-
-
+import com.example.profile.ui.navigation.ScreenRoute
 
 
 @Composable
@@ -110,7 +108,7 @@ fun SessionScreen(viewModel: MainViewModel, navController: NavHostController) {
 
         ) {
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(ScreenRoute.Login.route) },
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = Color(0xFFEB445B),
                     containerColor = White
@@ -135,7 +133,7 @@ fun SessionScreen(viewModel: MainViewModel, navController: NavHostController) {
             }
 
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(ScreenRoute.Register.route) },
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = Color(0xFFEB445B),
                     containerColor = White

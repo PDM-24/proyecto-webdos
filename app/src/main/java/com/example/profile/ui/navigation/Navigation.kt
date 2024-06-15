@@ -7,7 +7,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.ui.Screen.HomeScreen
+import com.example.profile.ui.Screen.LoginScreen
 import com.example.profile.ui.Screen.ProfileScreen
+import com.example.profile.ui.Screen.RegisterScreen
 import com.example.profile.ui.Screen.SessionScreen
 
 @Composable
@@ -16,7 +18,7 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = ScreenRoute.Profile.route,
+        startDestination = ScreenRoute.Session.route,
         modifier = modifier // Pasar el modifier a NavHost
     ) {
         composable(route = ScreenRoute.Session.route) {
@@ -27,6 +29,12 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         }
         composable(route = ScreenRoute.Home.route) {
             HomeScreen(viewModel, navController)
+        }
+        composable(route = ScreenRoute.Login.route) {
+            LoginScreen(viewModel, navController)
+        }
+        composable(route = ScreenRoute.Register.route) {
+            RegisterScreen(viewModel, navController)
         }
     }
 }
