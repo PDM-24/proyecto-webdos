@@ -1,4 +1,4 @@
-package com.example.profile.ui.Screen
+package com.example.profile.ui.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

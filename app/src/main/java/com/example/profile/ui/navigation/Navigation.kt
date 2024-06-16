@@ -1,17 +1,18 @@
 package com.example.profile.ui.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
-import com.example.profile.ui.Screen.HomeScreen
-import com.example.profile.ui.Screen.LoginScreen
-import com.example.profile.ui.Screen.ProfileScreen
-import com.example.profile.ui.Screen.RegisterScreen
-import com.example.profile.ui.Screen.SearchScreen
-import com.example.profile.ui.Screen.SessionScreen
+import com.example.profile.ui.screen.HomeScreen
+import com.example.profile.ui.screen.LoginScreen
+import com.example.profile.ui.screen.ProfileScreen
+import com.example.profile.ui.screen.RegisterScreen
+import com.example.profile.ui.screen.SearchScreen
+import com.example.profile.ui.screen.SessionScreen
 
 @Composable
 fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
@@ -29,7 +30,7 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
             ProfileScreen(viewModel, navController)
         }
         composable(route = ScreenRoute.Home.route) {
-            HomeScreen(viewModel, navController)
+            HomeScreen(viewModel, navController,innerPadding = PaddingValues())
         }
         composable(route = ScreenRoute.Login.route) {
             LoginScreen(viewModel, navController)

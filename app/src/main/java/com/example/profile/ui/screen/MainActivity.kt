@@ -1,4 +1,4 @@
-package com.example.profile.ui.Screen
+package com.example.profile.ui.screen
 
 
 import android.Manifest
@@ -9,14 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
-import com.example.profile.ui.Screen.SearchScreen
-import androidx.activity.compose.setContent
-import com.example.profile.ui.Screen.MyApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
