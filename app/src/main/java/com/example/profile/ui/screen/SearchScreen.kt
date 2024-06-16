@@ -1,4 +1,4 @@
-package com.example.profile.ui.Screen
+package com.example.profile.ui.screen
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -13,8 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.example.profile.MainViewModel
-import com.example.profile.ui.Component.BottomNavigationBar
-import com.example.profile.ui.Component.TopBar
+import com.example.profile.ui.component.BottomNavigationBar
+import com.example.profile.ui.component.TopBar
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition

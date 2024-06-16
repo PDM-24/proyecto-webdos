@@ -52,11 +52,14 @@ android {
 
 dependencies {
 
-
-    //Maps
+    implementation("androidx.compose.material:material-icons-extended:1.2.0")
+    implementation("androidx.compose.ui:ui:1.2.0")
+    implementation("androidx.compose.material:material:1.2.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.2.0")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.26.3-beta")
     implementation("com.google.maps.android:maps-compose:1.0.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
-
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
