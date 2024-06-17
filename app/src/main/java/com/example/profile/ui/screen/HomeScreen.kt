@@ -29,7 +29,12 @@ import androidx.compose.foundation.lazy.items
 
 
 @Composable
-fun HomeScreen(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier, innerPadding: PaddingValues) {
+fun HomeScreen(
+    viewModel: MainViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    innerPadding: PaddingValues
+) {
 
     val searchQuery = remember { mutableStateOf("") }
 
@@ -72,6 +77,10 @@ fun HomeScreen(viewModel: MainViewModel, navController: NavController, modifier:
 fun HomeScreenPreview() {
     val navController = rememberNavController()
     val viewModel = MainViewModel()
-    HomeScreen(viewModel = viewModel, navController = navController, innerPadding = PaddingValues(0.dp))
+    HomeScreen(
+        viewModel = viewModel,
+        navController = navController,
+        innerPadding = PaddingValues(0.dp)
+    )
 }
 

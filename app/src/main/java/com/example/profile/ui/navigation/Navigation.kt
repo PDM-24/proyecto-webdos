@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
+import com.example.profile.ui.screen.FavoritesScreen
 import com.example.profile.ui.screen.HomeScreen
 import com.example.profile.ui.screen.LoginScreen
 import com.example.profile.ui.screen.ProfileScreen
@@ -41,5 +42,9 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         composable(route = ScreenRoute.Search.route) {
             SearchScreen(viewModel, navController)
         }
+        composable(route = ScreenRoute.Favorite.route) {
+            FavoritesScreen(viewModel, navController)
+        }
+
     }
 }

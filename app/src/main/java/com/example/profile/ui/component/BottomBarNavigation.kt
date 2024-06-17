@@ -34,7 +34,7 @@ fun BottomNavigationBar(navController: NavController) {
             icon = { Icon(Icons.Outlined.StarBorder, contentDescription = "Favorites", tint = Color.Black) },
             label = { Text("Favorites", fontFamily = InterFontFamily, fontWeight = FontWeight.Bold, fontSize = 15.sp,color = Black2) },
             selected = false,
-            onClick = { /* Manejar navegación */ }
+            onClick = { navController.navigate(ScreenRoute.Favorite.route)}
         )
         BottomNavigationItem(
             icon = { Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.Black) },
