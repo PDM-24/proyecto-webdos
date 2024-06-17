@@ -1,0 +1,43 @@
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+// Define the schema for a reply
+const replySchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    content: {
+        type: String,
+        required: true,
+    },
+}, { timestamps: true });
+
+// Define the schema for a comment
+const commentSchema = new Schema({
+    content: {
+        type: String,
+        required: true,
+    },
+    hidden: {
+        type: Boolean,
+        default: false,
+    },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    likes: {
+        type: [Schema.Types.ObjectId],
+        ref: "User",
+        default: [],
+    },
+    replies: {
+        type: [replySchema],
+        default: [],
+    },
+}, { timestamps: true });
+
+module.exports = mongoose.model("Comment", commentSchema);
