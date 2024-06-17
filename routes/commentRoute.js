@@ -1,60 +1,23 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
+const commentController = require('../controllers/commentController');
+const { authentication } = require('../middlewares/authMiddleware');
 
-const {
-    createCommentValidator,
-    saveCommentValidator,
-    idInParamsValidator,
-    saveReplyValidator
-} = require("../validators/commentValidator");
-const validateFields = require("../validators/indexMiddleware");
+// Ruta para obtener todos los comentarios
+router.get('/', commentController.getAllComments);
 
-const commentController = require("../controllers/commentController");
+// Ruta para crear un nuevo comentario
+router.post('/', authentication, commentController.createComment);
 
-const { authentication } = require("../middlewares/authMiddleware");
+// Ruta para obtener un comentario por su ID
+router.get('/:id', commentController.getCommentById);
 
-// Obtener todos los comentarios
-router.get('/comments',
-    commentController.findAll);
+// Ruta para actualizar un comentario por su ID
+router.put('/:id', authentication, commentController.updateComment);
 
-// Obtener comentarios por usuario
-router.get('/userComments/:identifier',
-    idInParamsValidator,
-    validateFields,
-    commentController.findByUser);
+// Ruta para eliminar un comentario por su ID
+router.delete('/:id', authentication, commentController.deleteComment);
 
-// Obtener un comentario por su ID
-router.get('/commentsById/:id',
-    idInParamsValidator,
-    validateFields,
-    commentController.findOneById);
-
-// Crear o actualizar un comentario
-router.post(["/", "/:identifier"],
-    authentication,
-    createCommentValidator,
-    validateFields,
-    commentController.save);
-
-// Eliminar un comentario
-router.delete('/deleteComment/:id',
-    authentication,
-    idInParamsValidator,
-    validateFields,
-    commentController.deleteComment);
-
-// Guardar una respuesta a un comentario
-router.post('/comments/:identifier/reply',
-    authentication,
-    saveReplyValidator,
-    validateFields,
-    commentController.saveReply);
-
-// Ruta para dar like a un comentario
-router.patch('/comments/Like/:identifier',
-    authentication,
-    idInParamsValidator,
-    validateFields,
-    commentController.likeComment);
+module.exports = router;
 
 module.exports = router;

@@ -21,6 +21,11 @@ const userSchema = new Schema({
         trim: true,
         required: true,
     },
+    username: {
+        type: String,
+        unique: true,
+        required: true,
+    },
     hashedPassword: {
         type: String,
         trim: true,
@@ -46,11 +51,10 @@ userSchema.virtual('password')
         return this._password;
     });
 
-// Pre-save hook para cifrar la contraseña
+// Pre-save hook para cifrar la contraseña y generar el nombre de usuario
 userSchema.pre('save', function (next) {
-    if (this.isModified('password')) {
-        this.salt = this.makeSalt();
-        this.hashedPassword = this.encryptPassword(this.password);
+    if (!this.username) {
+        this.username = this.email.split('@')[0]; // Genera el nombre de usuario a partir del correo electrónico
     }
     next();
 });
