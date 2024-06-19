@@ -58,8 +58,17 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.2.0")
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
     implementation("com.google.accompanist:accompanist-flowlayout:0.26.3-beta")
-    implementation("com.google.maps.android:maps-compose:1.0.0")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
+
+    //Maps
+    implementation("com.google.maps.android:maps-compose:2.5.3")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    implementation("com.google.android.libraries.places:places:3.5.0")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
+
+    /*   implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.android.libraries.places:places:2.5.0'
+    */
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -84,4 +93,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     ksp("androidx.room:room-compiler:2.6.1")
+}
+
+configurations.all {
+    resolutionStrategy {
+        force ("com.google.android.gms:play-services-maps:18.1.0")
+        force ("com.google.android.gms:play-services-location:21.0.1")
+        force ("'com.google.android.libraries.places:places:2.6.0';")
+    }
 }

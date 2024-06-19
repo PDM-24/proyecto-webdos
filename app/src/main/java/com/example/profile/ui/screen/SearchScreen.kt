@@ -23,6 +23,10 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 
 @SuppressLint("MissingPermission", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -33,10 +37,16 @@ fun SearchScreen(
     content: @Composable () -> Unit = {}
 ) {
     val context = LocalContext.current
-    val fusedLocationClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(context)
+    val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     var currentLocation by remember { mutableStateOf<LatLng?>(null) }
     val cameraPositionState = rememberCameraPositionState()
+    var restaurants by remember { mutableStateOf<List<Place>>(emptyList()) }
+
+    // Inicializa Places API si no está inicializado
+    if (!Places.isInitialized()) {
+        Places.initialize(context.applicationContext, "YOUR_API_KEY")
+    }
+    val placesClient: PlacesClient = Places.createClient(context)
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -47,6 +57,9 @@ fun SearchScreen(
                         currentLocation = LatLng(it.latitude, it.longitude)
                         cameraPositionState.position =
                             CameraPosition.fromLatLngZoom(currentLocation!!, 17f)
+                        fetchNearbyRestaurants(placesClient, currentLocation!!) { places ->
+                            restaurants = places
+                        }
                     }
                 }
             }
@@ -64,6 +77,9 @@ fun SearchScreen(
                         currentLocation = LatLng(it.latitude, it.longitude)
                         cameraPositionState.position =
                             CameraPosition.fromLatLngZoom(currentLocation!!, 17f)
+                        fetchNearbyRestaurants(placesClient, currentLocation!!) { places ->
+                            restaurants = places
+                        }
                     }
                 }
             }
@@ -92,8 +108,16 @@ fun SearchScreen(
                     zoomControlsEnabled = false // Esta línea oculta los botones de zoom
                 )
             ) {
-
                 MyLocationOverlay()
+                restaurants.forEach { place ->
+                    place.latLng?.let { latLng ->
+                        Marker(
+                            state = rememberMarkerState(position = latLng),
+                            title = place.name,
+                            snippet = place.address
+                        )
+                    }
+                }
             }
         }
     }
@@ -137,5 +161,23 @@ fun getLastLocation(
 ) {
     fusedLocationClient.lastLocation.addOnSuccessListener { location ->
         callback(location)
+    }
+}
+
+@SuppressLint("MissingPermission")
+fun fetchNearbyRestaurants(
+    placesClient: PlacesClient,
+    currentLocation: LatLng,
+    callback: (List<Place>) -> Unit
+) {
+    val placeFields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG)
+    val request = FindCurrentPlaceRequest.newInstance(placeFields)
+
+    placesClient.findCurrentPlace(request).addOnSuccessListener { response ->
+        val likelyPlaces = response.placeLikelihoods.mapNotNull { it.place }
+        callback(likelyPlaces)
+    }.addOnFailureListener { exception ->
+        exception.printStackTrace()
+        callback(emptyList())
     }
 }
