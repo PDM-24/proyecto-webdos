@@ -95,7 +95,7 @@ fun SearchScreen(
 
     LaunchedEffect(Unit) {
         MapsInitializer.initialize(context)
-        markerIcon.value = bitmapDescriptorFromVector(context, R.drawable.vector_colored_transparent_resized)
+        markerIcon.value = bitmapDescriptorFromVector(context, R.drawable.vector_sabormap)
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLastLocation(fusedLocationClient) { location ->
@@ -144,8 +144,8 @@ fun SearchScreen(
                         place.latLng?.let { latLng ->
                             Marker(
                                 state = rememberMarkerState(position = latLng),
-                                title = place.name,
-                                snippet = place.address,
+                                title = place.name ?: "Unknown Place",
+                                snippet = place.address ?: "No Address",
                                 icon = markerIcon.value, // Aquí se asigna el ícono personalizado
                                 onClick = {
                                     scope.launch {
@@ -287,7 +287,7 @@ fun PlaceDetailsContent(place: Place, placesClient: PlacesClient) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(text = place.name?: "No Name")
+        Text(text = place.name ?: "No Name")
         Text(text = place.address ?: "No Address")
         place.phoneNumber?.let {
             Text(text = "Phone: $it")
