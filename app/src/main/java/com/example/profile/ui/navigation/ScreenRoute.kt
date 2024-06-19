@@ -12,6 +12,6 @@ sealed class ScreenRoute(var route: String) {
     object Search: ScreenRoute("SearchMap")
 
     object Favorite: ScreenRoute("Favorites")
-
+    object Photos : ScreenRoute("photos")
 
 }
