@@ -52,6 +52,13 @@ android {
 
 dependencies {
 
+    val retrofit_version = "2.11.0"
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofit_version")
+
+
     implementation("androidx.compose.material:material-icons-extended:1.2.0")
     implementation("androidx.compose.ui:ui:1.2.0")
     implementation("androidx.compose.material:material:1.2.0")
