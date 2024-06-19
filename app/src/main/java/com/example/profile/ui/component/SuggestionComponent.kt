@@ -61,7 +61,7 @@ fun SuggestionComponent(suggestion: SuggestionDataModel) {
                 containerColor = Gray4
             ),
             modifier = Modifier
-                .width(160.dp)
+                .fillMaxWidth()
                 .height(146.dp),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 0.dp

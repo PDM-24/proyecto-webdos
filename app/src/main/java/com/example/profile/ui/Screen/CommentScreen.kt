@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
-import com.example.profile.ui.Component.BottomNavigationBar
+import com.example.profile.ui.component.BottomNavigationBar
 import com.example.profile.R
 
 @Composable
