@@ -1,28 +1,32 @@
 package com.example.profile.data.api
 
+import com.example.profile.utils.Constants
 import com.google.gson.annotations.SerializedName
 
-/*
-@Entity(tableName = "users")
-data class User(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val name: String,
-    val email: String,
-    val passwordHash: String
-)
- */
-
 data class UserApi (
-    @SerializedName(value = "_id")
-    val id: Int = 0,
+    @SerializedName(value = Constants.USER_ID)
+    val id: String? = null,
 
-    @SerializedName(value = "name")
-    val name: String,
+    @SerializedName(value = Constants.USER_FIRST_NAME)
+    val firstName: String = "",
 
-    @SerializedName(value = "email")
-    val email: String,
+    @SerializedName(value = Constants.USER_LAST_NAME)
+    val lastName: String = "",
 
-    @SerializedName(value = "passwordHash")
-    val passwordHash: String
+    @SerializedName(value = Constants.USER_EMAIL)
+    val email: String = "",
+
+    @SerializedName(value = Constants.USER_NAME)
+    val username: String = "",
+
+    @SerializedName(value = Constants.USER_HASHED_PASSWORD)
+    val hashedPassword: String = "",
+
+    @SerializedName(value = Constants.USER_SALT)
+    val salt: String = "",
+
+    @SerializedName(value = Constants.USER_TOKENS)
+    val tokens: List<String> = emptyList()
 )
+
 

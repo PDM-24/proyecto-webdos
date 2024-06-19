@@ -23,22 +23,41 @@ data class Comment(
  */
 
 data class CommentsApi(
-    @SerializedName(value = "_id")
-    val id: Int = 0,
 
-    @SerializedName(value = "restaurantId")
-    val restaurantId: Int,
+    @SerializedName("_id")
+    val id: Id,
 
-    @SerializedName(value = "userId")
-    val userId: Int,
+    @SerializedName("comentario")
+    val comentario: String = "",
 
-    @SerializedName(value = "rating")
-    val rating: Float,
+    @SerializedName("hidden")
+    val hidden: Boolean = false,
 
-    @SerializedName(value = "comment")
-    val comment: String,
+    @SerializedName("username")
+    val username: Id,
 
-    @SerializedName(value = "timestamp")
-    val timestamp: Long
+    @SerializedName("Me_gusta")
+    val meGusta: List<Any> = emptyList(),
+
+    @SerializedName("comentarios")
+    val comentarios: List<Any> = emptyList(),
+
+    @SerializedName("createdAt")
+    val createdAt: DateWrapper,
+
+    @SerializedName("updatedAt")
+    val updatedAt: DateWrapper,
+
+    @SerializedName("__v")
+    val v: Int = 0
 )
 
+data class Id(
+    @SerializedName("\$objectId")
+    val objectId: String? = null
+)
+
+data class DateWrapper(
+    @SerializedName("\$date")
+    val date: String? = null
+)

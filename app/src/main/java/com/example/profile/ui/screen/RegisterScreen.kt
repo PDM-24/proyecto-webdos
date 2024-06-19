@@ -39,6 +39,7 @@ fun RegisterScreen(viewModel: MainViewModel,
     var password by remember { mutableStateOf("") }
     var passwordConfirmation by remember { mutableStateOf("") }
 
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

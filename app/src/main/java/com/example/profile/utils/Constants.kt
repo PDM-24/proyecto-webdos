@@ -34,6 +34,19 @@ object Constants {
     // create a new user
     const val POST_NEW_USER_PATH = "/newUser"
 
+    const val USER_ID = "_id"
+    const val USER_FIRST_NAME = "firstName"
+    const val USER_LAST_NAME = "lastName"
+    const val USER_EMAIL = "email"
+    const val USER_NAME = "username"
+    const val USER_HASHED_PASSWORD = "hashedPassword"
+    const val USER_SALT = "salt"
+    const val USER_TOKENS = "tokens"
+
+    // apiResponse
+    const val RESPONSE_SUCCESFUL = "ok"
+    const val RESPONSE_ERROR = "error"
+
     // get a user by id
     const val GET_USER_PATH = "/getUser/:id"
 
