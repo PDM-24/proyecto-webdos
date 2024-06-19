@@ -44,7 +44,7 @@ fun SearchBar(onSearch: (String) -> Unit) {
         Box(
             modifier = Modifier
                 .height(46.dp)
-                .fillMaxWidth(fraction = 0.6f)
+                .fillMaxWidth()
                 .padding(horizontal = 28.dp)
                 .background(Color(0x80D9D9D9), shape = RoundedCornerShape(30.dp))
         ) {

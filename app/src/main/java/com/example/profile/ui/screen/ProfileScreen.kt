@@ -23,6 +23,7 @@ import com.example.profile.MainViewModel
 import com.example.profile.ui.component.BottomNavigationBar
 import com.example.profile.ui.component.TopBar
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(viewModel: MainViewModel, navController: NavHostController) {
