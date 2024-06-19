@@ -6,18 +6,23 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.location.Location
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.example.profile.MainViewModel
@@ -33,17 +38,23 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPhotoRequest
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("MissingPermission", "UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun SearchScreen(
     viewModel: MainViewModel,
     navController: NavHostController,
     onMapLoadedListener: () -> Unit = {},
-    content: @Composable () -> Unit = {}
 ) {
     val context = LocalContext.current
     val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
@@ -53,6 +64,10 @@ fun SearchScreen(
     val markerIcon = remember {
         mutableStateOf<BitmapDescriptor?>(null)
     }
+
+    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+    var selectedPlaceDetails by remember { mutableStateOf<Place?>(null) }
+    val scope = rememberCoroutineScope()
 
     // Inicializa Places API si no está inicializado
     if (!Places.isInitialized()) {
@@ -82,56 +97,69 @@ fun SearchScreen(
         MapsInitializer.initialize(context)
         markerIcon.value = bitmapDescriptorFromVector(context, R.drawable.vector_colored_transparent_resized)
 
-        when {
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                getLastLocation(fusedLocationClient) { location ->
-                    location?.let {
-                        currentLocation = LatLng(it.latitude, it.longitude)
-                        cameraPositionState.position =
-                            CameraPosition.fromLatLngZoom(currentLocation!!, 17f)
-                        fetchNearbyRestaurants(placesClient, currentLocation!!) { places ->
-                            restaurants = places
-                        }
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getLastLocation(fusedLocationClient) { location ->
+                location?.let {
+                    currentLocation = LatLng(it.latitude, it.longitude)
+                    cameraPositionState.position =
+                        CameraPosition.fromLatLngZoom(currentLocation!!, 17f)
+                    fetchNearbyRestaurants(placesClient, currentLocation!!) { places ->
+                        restaurants = places
                     }
                 }
             }
-            else -> {
-                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
+        } else {
+            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopBar(title = "Search", navController = navController)
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        sheetContent = {
+            selectedPlaceDetails?.let { PlaceDetailsContent(it, placesClient) }
         },
-        bottomBar = {
-            BottomNavigationBar(navController = navController)
-        }
-    ) { innerPadding ->
+        sheetPeekHeight = 0.dp // Start with the sheet hidden
+    ) {
+        Scaffold(
+            topBar = {
+                TopBar(title = "Search", navController = navController)
+            },
+            bottomBar = {
+                BottomNavigationBar(navController = navController)
+            }
+        ) { innerPadding ->
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState,
-                onMapLoaded = onMapLoadedListener,
-                uiSettings = MapUiSettings(
-                    myLocationButtonEnabled = true,
-                    zoomControlsEnabled = false // Esta línea oculta los botones de zoom
-                )
-            ) {
-                MyLocationOverlay()
-                restaurants.forEach { place ->
-                    place.latLng?.let { latLng ->
-                        Marker(
-                            state = rememberMarkerState(position = latLng),
-                            title = place.name,
-                            snippet = place.address,
-                            icon = markerIcon.value // Aquí se asigna el ícono personalizado
-                        )
+            Box(modifier = Modifier.fillMaxSize()) {
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    onMapLoaded = onMapLoadedListener,
+                    uiSettings = MapUiSettings(
+                        myLocationButtonEnabled = true,
+                        zoomControlsEnabled = false // Esta línea oculta los botones de zoom
+                    )
+                ) {
+                    MyLocationOverlay()
+                    restaurants.forEach { place ->
+                        place.latLng?.let { latLng ->
+                            Marker(
+                                state = rememberMarkerState(position = latLng),
+                                title = place.name,
+                                snippet = place.address,
+                                icon = markerIcon.value, // Aquí se asigna el ícono personalizado
+                                onClick = {
+                                    scope.launch {
+                                        fetchPlaceDetails(placesClient, place.id) { details ->
+                                            selectedPlaceDetails = details
+                                            scope.launch {
+                                                bottomSheetScaffoldState.bottomSheetState.expand()
+                                            }
+                                        }
+                                    }
+                                    true
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -146,11 +174,7 @@ fun MyLocationOverlay() {
     var myLocation by remember { mutableStateOf<LatLng?>(null) }
 
     LaunchedEffect(Unit) {
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
                     myLocation = LatLng(it.latitude, it.longitude)
@@ -211,5 +235,85 @@ fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescri
         val canvas = Canvas(bitmap)
         vectorDrawable.draw(canvas)
         BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+}
+
+fun fetchPlaceDetails(
+    placesClient: PlacesClient,
+    placeId: String,
+    callback: (Place?) -> Unit
+) {
+    val placeFields: List<Place.Field> = listOf(
+        Place.Field.BUSINESS_STATUS,
+        Place.Field.CURRENT_OPENING_HOURS,
+        Place.Field.ID,
+        Place.Field.OPENING_HOURS,
+        Place.Field.UTC_OFFSET,
+        Place.Field.PHONE_NUMBER,
+        Place.Field.WEBSITE_URI,
+        Place.Field.RATING,
+        Place.Field.USER_RATINGS_TOTAL,
+        Place.Field.ADDRESS_COMPONENTS,
+        Place.Field.PHOTO_METADATAS
+    )
+
+    val request = FetchPlaceRequest.newInstance(placeId, placeFields)
+    placesClient.fetchPlace(request).addOnSuccessListener { response ->
+        callback(response.place)
+    }.addOnFailureListener { exception ->
+        exception.printStackTrace()
+        callback(null)
+    }
+}
+
+fun fetchPhoto(placesClient: PlacesClient, photoMetadata: PhotoMetadata, callback: (Bitmap?) -> Unit) {
+    val photoRequest = FetchPhotoRequest.builder(photoMetadata)
+        .setMaxWidth(500) // Ajusta el tamaño máximo de la imagen según sea necesario
+        .setMaxHeight(500)
+        .build()
+    placesClient.fetchPhoto(photoRequest).addOnSuccessListener { fetchPhotoResponse ->
+        callback(fetchPhotoResponse.bitmap)
+    }.addOnFailureListener { exception ->
+        exception.printStackTrace()
+        callback(null)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun PlaceDetailsContent(place: Place, placesClient: PlacesClient) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(text = place.name?: "No Name")
+        Text(text = place.address ?: "No Address")
+        place.phoneNumber?.let {
+            Text(text = "Phone: $it")
+        }
+        place.websiteUri?.let {
+            Text(text = "Website: $it")
+        }
+        place.rating?.let {
+            Text(text = "Rating: $it (${place.userRatingsTotal} reviews)")
+        }
+        place.currentOpeningHours?.let {
+            Text(text = "Open Now: ${it.weekdayText.joinToString(", ")}")
+        }
+
+        place.photoMetadatas?.firstOrNull()?.let { photoMetadata ->
+            var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+            LaunchedEffect(photoMetadata) {
+                fetchPhoto(placesClient, photoMetadata) { fetchedBitmap ->
+                    bitmap = fetchedBitmap
+                }
+            }
+
+            bitmap?.let {
+                Image(bitmap = it.asImageBitmap(), contentDescription = null, modifier = Modifier.fillMaxWidth())
+            }
+        }
     }
 }
