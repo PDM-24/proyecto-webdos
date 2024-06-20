@@ -52,6 +52,7 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.benchmark.common)
     val retrofit_version = "2.11.0"
 
     // Retrofit

@@ -22,11 +22,17 @@ data class UserApi (
     @SerializedName(value = Constants.USER_HASHED_PASSWORD)
     val hashedPassword: String = "",
 
+    @SerializedName(value = "confirmPassword")
+    val confirmPassword: String = "",
+/*
     @SerializedName(value = Constants.USER_SALT)
-    val salt: String = "",
+    val salt: String? = null,
 
     @SerializedName(value = Constants.USER_TOKENS)
-    val tokens: List<String> = emptyList()
+    val tokens: List<String>? = emptyList()
+
+ */
 )
+
 
 

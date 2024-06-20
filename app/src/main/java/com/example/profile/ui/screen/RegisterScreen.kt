@@ -1,5 +1,6 @@
 package com.example.profile.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,25 +22,51 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.profile.MainViewModel
+import com.example.profile.UiState
+import androidx.compose.ui.ExperimentalComposeUiApi
+import com.example.profile.data.api.UserApi
+import com.example.profile.ui.component.LoadingProgressDialog
 import com.example.profile.ui.navigation.ScreenRoute
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import android.util.Patterns
 
-
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun RegisterScreen(viewModel: MainViewModel,
-                   navController: NavController,
-                   modifier: Modifier = Modifier) {
-    var name by remember { mutableStateOf("") }
+fun RegisterScreen(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier) {
+    var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var passwordConfirmation by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val registerScreenState by viewModel.uiState.collectAsState()
+    when (registerScreenState) {
+        is UiState.Error -> {
+            val message = (registerScreenState as UiState.Error).msg
+            Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+            viewModel.setStateToReady()
+        }
+        UiState.Loading -> {
+            LoadingProgressDialog()
+        }
+        UiState.Ready -> {}
+        is UiState.Success -> {
+            val message = (registerScreenState as UiState.Success).msg
+            Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+            viewModel.setStateToReady()
+            navController.popBackStack()
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -56,9 +84,9 @@ fun RegisterScreen(viewModel: MainViewModel,
         )
 
         OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
+            value = firstName,
+            onValueChange = { firstName = it },
+            label = { Text("First Name") },
             shape = RoundedCornerShape(50),
             modifier = Modifier
                 .fillMaxWidth()
@@ -98,8 +126,8 @@ fun RegisterScreen(viewModel: MainViewModel,
         )
 
         OutlinedTextField(
-            value = passwordConfirmation,
-            onValueChange = { passwordConfirmation = it },
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
             label = { Text("Password Confirmation") },
             visualTransformation = PasswordVisualTransformation(),
             shape = RoundedCornerShape(50),
@@ -108,8 +136,34 @@ fun RegisterScreen(viewModel: MainViewModel,
                 .padding(vertical = 8.dp)
         )
 
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage ?: "",
+                color = Color.Red,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
         Button(
-            onClick = { navController.navigate(ScreenRoute.Login.route) },
+            onClick = {
+                keyboardController?.hide()
+                if (password != confirmPassword) {
+                    errorMessage = "Passwords do not match"
+                } else if (!isPasswordValid(password)) {
+                    errorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one number, one special character, and be at least 8 characters long."
+                } else {
+                    errorMessage = null
+                    viewModel.createNewUser(
+                        UserApi(
+                            firstName = firstName,
+                            lastName = lastName,
+                            email = email,
+                            hashedPassword = password,
+                            confirmPassword = confirmPassword
+                        )
+                    )
+                }
+            },
             shape = RoundedCornerShape(50),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEB5757)),
             modifier = Modifier
@@ -133,3 +187,9 @@ fun RegisterScreen(viewModel: MainViewModel,
         }
     }
 }
+
+fun isPasswordValid(password: String): Boolean {
+    val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$"
+    return password.matches(Regex(passwordPattern))
+}
+

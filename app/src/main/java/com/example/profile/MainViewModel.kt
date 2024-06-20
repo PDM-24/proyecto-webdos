@@ -1,34 +1,51 @@
 package com.example.profile
 
-import android.net.http.HttpException
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresExtension
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.profile.data.api.ApiClient
 import com.example.profile.data.api.UserApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class MainViewModel : ViewModel() {
 
-    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-    fun createNewUser(user : UserApi){
+    private val _uiState = MutableStateFlow<UiState>(UiState.Ready)
+    val uiState: StateFlow<UiState> = _uiState
+
+    private val api = ApiClient.apiService
+
+    fun createNewUser(user: UserApi) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = ApiClient.apiService.createNewUser(user)
+                _uiState.value = UiState.Loading
+                val response = api.createNewUser(user)
                 Log.i("MainViewModel", response.toString())
-            } catch (e: Exception){
-
-                when(e){
-                    is HttpException -> {
-                        Log.i("MainViewModel", e.toString())
-                    } else -> {
-                        Log.i("MainViewModel", "Error. Contacte al soporte tecnico")
-                    }
-                }
+                _uiState.value = UiState.Success("User registered successfully")
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                Log.e("MainViewModel", "HTTP error: ${e.message()} - $errorBody", e)
+                _uiState.value = UiState.Error("HTTP error: ${e.message()} - $errorBody")
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Unknown error", e)
+                _uiState.value = UiState.Error("Error. Contact support.")
             }
         }
     }
+
+    fun setStateToReady() {
+        _uiState.value = UiState.Ready
+    }
+}
+
+sealed class UiState {
+    object Loading : UiState()
+    object Ready : UiState()
+    data class Success(val msg: String) : UiState()
+    data class Error(val msg: String) : UiState()
 }

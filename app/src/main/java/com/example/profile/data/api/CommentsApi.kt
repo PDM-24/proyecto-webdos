@@ -2,26 +2,6 @@ package com.example.profile.data.api
 
 import com.google.gson.annotations.SerializedName
 
-/*
-@Entity(
-    tableName = "comments",
-    foreignKeys = [ForeignKey(
-        entity = Restaurant::class,
-        parentColumns = ["id"],
-        childColumns = ["restaurantId"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
-data class Comment(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val restaurantId: Int,
-    val userId: Int,
-    val rating: Float,
-    val comment: String,
-    val timestamp: Long
-)
- */
-
 data class CommentsApi(
 
     @SerializedName("_id")
