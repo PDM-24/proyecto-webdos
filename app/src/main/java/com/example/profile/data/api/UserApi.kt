@@ -19,8 +19,8 @@ data class UserApi (
     @SerializedName(value = Constants.USER_NAME)
     val username: String = "",
 
-    @SerializedName(value = Constants.USER_HASHED_PASSWORD)
-    val hashedPassword: String = "",
+    @SerializedName(value = Constants.USER_PASSWORD)
+    val password: String = "",
 
     @SerializedName(value = "confirmPassword")
     val confirmPassword: String = "",

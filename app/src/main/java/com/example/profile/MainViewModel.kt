@@ -38,6 +38,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
+
     fun setStateToReady() {
         _uiState.value = UiState.Ready
     }

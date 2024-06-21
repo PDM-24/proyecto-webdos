@@ -35,11 +35,14 @@ import com.example.profile.data.api.UserApi
 import com.example.profile.ui.component.LoadingProgressDialog
 import com.example.profile.ui.navigation.ScreenRoute
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import android.util.Patterns
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier) {
+
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -50,10 +53,14 @@ fun RegisterScreen(viewModel: MainViewModel, navController: NavController, modif
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val registerScreenState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
     when (registerScreenState) {
         is UiState.Error -> {
             val message = (registerScreenState as UiState.Error).msg
-            Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
             viewModel.setStateToReady()
         }
         UiState.Loading -> {
@@ -62,7 +69,9 @@ fun RegisterScreen(viewModel: MainViewModel, navController: NavController, modif
         UiState.Ready -> {}
         is UiState.Success -> {
             val message = (registerScreenState as UiState.Success).msg
-            Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
             viewModel.setStateToReady()
             navController.popBackStack()
         }
@@ -149,16 +158,16 @@ fun RegisterScreen(viewModel: MainViewModel, navController: NavController, modif
                 keyboardController?.hide()
                 if (password != confirmPassword) {
                     errorMessage = "Passwords do not match"
-                } else if (!isPasswordValid(password)) {
-                    errorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one number, one special character, and be at least 8 characters long."
                 } else {
                     errorMessage = null
+                    Log.i("Contra",password)
+                    Log.i("Contra",confirmPassword)
                     viewModel.createNewUser(
                         UserApi(
                             firstName = firstName,
                             lastName = lastName,
                             email = email,
-                            hashedPassword = password,
+                            password = password,
                             confirmPassword = confirmPassword
                         )
                     )
@@ -189,7 +198,8 @@ fun RegisterScreen(viewModel: MainViewModel, navController: NavController, modif
 }
 
 fun isPasswordValid(password: String): Boolean {
-    val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$"
+    val passwordPattern = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}\$/"
     return password.matches(Regex(passwordPattern))
 }
+
 
