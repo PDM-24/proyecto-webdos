@@ -14,7 +14,6 @@ object RetrofitClient{
     }
 }
 
-
 object ApiClient {
 
     val apiService : ApiService by lazy {

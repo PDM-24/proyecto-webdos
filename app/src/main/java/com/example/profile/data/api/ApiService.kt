@@ -6,7 +6,6 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface ApiService {
-
     /*
     post
     @POST("ruta de api + endpoint")
@@ -14,6 +13,10 @@ interface ApiService {
      */
     @Headers(value = ["Content-Type: application/json"])
     @POST(Constants.API_PATH+Constants.USERS_PATH+Constants.POST_NEW_USER_PATH)
-    suspend fun createNewUser(@Body user: UserApi): ApiResponseSuccesful
+    suspend fun createNewUser(@Body user: UserApi): ApiResponseSuccessful
+
+    @Headers(value = ["Content-Type: application/json"])
+    @POST(Constants.API_PATH+Constants.LOGIN_PATH+Constants.POST_LOGIN_PATH)
+    suspend fun logIn(@Body login: LoginApi): ApiResponseSuccessfulLogin
 
 }

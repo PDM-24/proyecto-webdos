@@ -49,8 +49,9 @@ object Constants {
     const val USER_TOKENS = "tokens"
 
     // apiResponse
-    const val RESPONSE_SUCCESFUL = "ok"
+    const val RESPONSE_SUCCESSFUL = "ok"
     const val RESPONSE_ERROR = "error"
+    const val RESPONSE_SUCCESSFUL_LOGIN = "token"
 
     // get a user by id
     const val GET_USER_PATH = "/getUser/:id"
