@@ -1,12 +1,16 @@
 package com.example.profile.ui.screen
 
 
-import android.Manifest
+
+
+/*import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
@@ -14,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +40,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyApp() {
     val context = LocalContext.current
@@ -43,4 +49,4 @@ fun MyApp() {
         viewModel = MainViewModel(),
         navController = rememberNavController()
     )
-}
+}*/
