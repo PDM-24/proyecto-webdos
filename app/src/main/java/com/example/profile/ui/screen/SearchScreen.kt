@@ -41,11 +41,10 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPhotoRequest
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("MissingPermission", "UnusedMaterial3ScaffoldPaddingParameter")
@@ -60,7 +59,7 @@ fun SearchScreen(
     val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     var currentLocation by remember { mutableStateOf<LatLng?>(null) }
     val cameraPositionState = rememberCameraPositionState()
-    var restaurants by remember { mutableStateOf<List<Place>>(emptyList()) }
+    var places by remember { mutableStateOf<List<Place>>(emptyList()) }
     val markerIcon = remember {
         mutableStateOf<BitmapDescriptor?>(null)
     }
@@ -84,8 +83,8 @@ fun SearchScreen(
                         currentLocation = LatLng(it.latitude, it.longitude)
                         cameraPositionState.position =
                             CameraPosition.fromLatLngZoom(currentLocation!!, 17f)
-                        fetchNearbyRestaurants(placesClient, currentLocation!!) { places ->
-                            restaurants = places
+                        fetchNearbyPlaces(placesClient, currentLocation!!) { fetchedPlaces ->
+                            places = fetchedPlaces
                         }
                     }
                 }
@@ -103,8 +102,8 @@ fun SearchScreen(
                     currentLocation = LatLng(it.latitude, it.longitude)
                     cameraPositionState.position =
                         CameraPosition.fromLatLngZoom(currentLocation!!, 17f)
-                    fetchNearbyRestaurants(placesClient, currentLocation!!) { places ->
-                        restaurants = places
+                    fetchNearbyPlaces(placesClient, currentLocation!!) { fetchedPlaces ->
+                        places = fetchedPlaces
                     }
                 }
             }
@@ -140,7 +139,7 @@ fun SearchScreen(
                     )
                 ) {
                     MyLocationOverlay()
-                    restaurants.forEach { place ->
+                    places.forEach { place ->
                         place.latLng?.let { latLng ->
                             Marker(
                                 state = rememberMarkerState(position = latLng),
@@ -188,7 +187,7 @@ fun MyLocationOverlay() {
             center = location,
             fillColor = Color(0x220000FF), // Color azul con transparencia
             strokeColor = Color(0x220000FF),
-            radius = 50.0, // Radio en metros
+            radius = 259.0, // Radio en metros
             strokeWidth = 2f
         )
     }
@@ -205,16 +204,25 @@ fun getLastLocation(
 }
 
 @SuppressLint("MissingPermission")
-fun fetchNearbyRestaurants(
+fun fetchNearbyPlaces(
     placesClient: PlacesClient,
     currentLocation: LatLng,
     callback: (List<Place>) -> Unit
 ) {
-    val placeFields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG)
+    val placeFields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.TYPES)
     val request = FindCurrentPlaceRequest.newInstance(placeFields)
 
     placesClient.findCurrentPlace(request).addOnSuccessListener { response ->
-        val likelyPlaces = response.placeLikelihoods.mapNotNull { it.place }
+        val likelyPlaces = response.placeLikelihoods
+            .mapNotNull { it.place }
+            .filter { place ->
+                place.types?.any { type ->
+                    type == Place.Type.RESTAURANT || type == Place.Type.CAFE || type == Place.Type.BAKERY ||
+                            type == Place.Type.FOOD || type == Place.Type.MEAL_DELIVERY || type == Place.Type.MEAL_TAKEAWAY ||
+                            type == Place.Type.BAR || type == Place.Type.NIGHT_CLUB
+
+                } == true
+            }
         callback(likelyPlaces)
     }.addOnFailureListener { exception ->
         exception.printStackTrace()
@@ -289,8 +297,8 @@ fun PlaceDetailsContent(place: Place, placesClient: PlacesClient) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(text = place.name?: "No Name ")
-        Text(text = place.address?: "No Address")
+        Text(text = place.name ?: "No Name ")
+        Text(text = place.address ?: "No Address")
 
         place.phoneNumber?.let {
             Text(text = "Phone: $it")
