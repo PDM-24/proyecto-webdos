@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
+import com.example.profile.ui.Screen.CommentScreen
 import com.example.profile.ui.screen.FavoritesScreen
 import com.example.profile.ui.screen.HomeScreen
 import com.example.profile.ui.screen.LoginScreen
@@ -15,6 +16,7 @@ import com.example.profile.ui.screen.ProfileScreen
 import com.example.profile.ui.screen.RegisterScreen
 import com.example.profile.ui.screen.SessionScreen
 import com.example.profile.ui.screen.SearchScreen
+
 
 
 @SuppressLint("NewApi")
@@ -49,6 +51,10 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 
         composable(route = ScreenRoute.Favorite.route) {
             FavoritesScreen(viewModel, navController)
+        }
+
+        composable(route = ScreenRoute.Comment.route) {
+            CommentScreen(viewModel, navController)
         }
 
     }

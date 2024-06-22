@@ -3,7 +3,7 @@ package com.example.profile.utils
 object Constants {
 
     // api sevice
-    const val BASE_URL = "http://192.168.1.15:3000"
+    const val BASE_URL = "http://192.168.1.19:3000"
     const val API_PATH = "/api"
 
     //api prueba
