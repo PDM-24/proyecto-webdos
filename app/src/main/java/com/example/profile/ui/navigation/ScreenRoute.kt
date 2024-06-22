@@ -16,4 +16,17 @@ sealed class ScreenRoute(var route: String) {
 
     object Comment : ScreenRoute("Comment")
 
+    object CommentBK : ScreenRoute("CommentBK")
+
+    object CommentST : ScreenRoute("CommentST")
+
+    object CommentPC : ScreenRoute("CommentPC")
+
+    object PhotosBK : ScreenRoute("PhotosBK")
+
+    object PhotosST : ScreenRoute("PhotosST")
+
+    object PhotosPC : ScreenRoute("PhotosPC")
+
+
 }

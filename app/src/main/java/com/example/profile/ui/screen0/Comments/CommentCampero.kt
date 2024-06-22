@@ -1,4 +1,4 @@
-package com.example.profile.ui.Screen
+package com.example.profile.ui.Screen.Comments
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,50 +30,52 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.R
+import com.example.profile.ui.navigation.ScreenRoute
 
-fun getPreferencesStarbucks(context: Context): SharedPreferences {
-    return context.getSharedPreferences("comment_prefs_starbucks", Context.MODE_PRIVATE)
+fun getPreferencesCampero(context: Context): SharedPreferences {
+    return context.getSharedPreferences("comment_prefs_campero", Context.MODE_PRIVATE)
 }
 
-fun saveRatingStarbucks(context: Context, username: String, rating: Int) {
-    val prefs = getPreferencesStarbucks(context)
+fun saveRatingCampero(context: Context, username: String, rating: Int) {
+    val prefs = getPreferencesCampero(context)
     with(prefs.edit()) {
         putInt("${username}_rating", rating)
         apply()
     }
 }
 
-fun loadRatingStarbucks(context: Context, username: String): Int {
-    val prefs = getPreferencesStarbucks(context)
+fun loadRatingCampero(context: Context, username: String): Int {
+    val prefs = getPreferencesCampero(context)
     return prefs.getInt("${username}_rating", 0)
 }
 
-fun saveLikeStateStarbucks(context: Context, username: String, liked: Boolean) {
-    val prefs = getPreferencesStarbucks(context)
+fun saveLikeStateCampero(context: Context, username: String, liked: Boolean) {
+    val prefs = getPreferencesCampero(context)
     with(prefs.edit()) {
         putBoolean("${username}_liked", liked)
         apply()
     }
 }
 
-fun loadLikeStateStarbucks(context: Context, username: String): Boolean {
-    val prefs = getPreferencesStarbucks(context)
+fun loadLikeStateCampero(context: Context, username: String): Boolean {
+    val prefs = getPreferencesCampero(context)
     return prefs.getBoolean("${username}_liked", false)
 }
 
-fun saveCommentAndRatingStarbucks(context: Context, comment: String, rating: Int) {
-    val prefs = getPreferencesStarbucks(context)
-    val commentsAndRatings = loadCommentsAndRatingsStarbucks(context).toMutableList()
+fun saveCommentAndRatingCampero(context: Context, comment: String, rating: Int) {
+    val prefs = getPreferencesCampero(context)
+    val commentsAndRatings = loadCommentsAndRatingsCampero(context).toMutableList()
     commentsAndRatings.add(Pair(comment, rating)) // Agregar el comentario y la calificación juntos
-    val commentsSet = commentsAndRatings.map { "${it.first},${it.second}" }.toSet() // Convertir la lista a un conjunto
+    val commentsSet = commentsAndRatings.map { "${it.first},${it.second}" }
+        .toSet() // Convertir la lista a un conjunto
     with(prefs.edit()) {
         putStringSet("comments", commentsSet)
         apply()
     }
 }
 
-fun loadCommentsAndRatingsStarbucks(context: Context): List<Pair<String, Int>> {
-    val prefs = getPreferencesStarbucks(context)
+fun loadCommentsAndRatingsCampero(context: Context): List<Pair<String, Int>> {
+    val prefs = getPreferencesCampero(context)
     val commentsSet = prefs.getStringSet("comments", setOf()) ?: setOf()
     return commentsSet.map { comment ->
         val parts = comment.split(",")
@@ -80,8 +83,8 @@ fun loadCommentsAndRatingsStarbucks(context: Context): List<Pair<String, Int>> {
     }
 }
 
-fun clearCommentsStarbucks(context: Context) {
-    val prefs = getPreferencesStarbucks(context)
+fun clearCommentsCampero(context: Context) {
+    val prefs = getPreferencesCampero(context)
     with(prefs.edit()) {
         remove("comments")
         apply()
@@ -90,17 +93,24 @@ fun clearCommentsStarbucks(context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier) {
+fun CommentScreenCampero(
+    viewModel: MainViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
-    val commentsAndRatings = remember { mutableStateListOf(*loadCommentsAndRatingsStarbucks(context).toTypedArray()) }
-    val ratings = remember { mutableStateMapOf(
-        5 to 3,  // Ejemplo de datos, en un caso real estos se cargarían desde preferencias u otra fuente de datos
-        4 to 1,
-        3 to 0,
-        2 to 1,
-        1 to 1
-    ) }
+    val commentsAndRatings =
+        remember { mutableStateListOf(*loadCommentsAndRatingsCampero(context).toTypedArray()) }
+    val ratings = remember {
+        mutableStateMapOf(
+            5 to 3,  // Ejemplo de datos, en un caso real estos se cargarían desde preferencias u otra fuente de datos
+            4 to 1,
+            3 to 0,
+            2 to 1,
+            1 to 1
+        )
+    }
     var showCommentDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -147,24 +157,30 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
-                            painter = painterResource(id = R.drawable.starbucks),
-                            contentDescription = "Logo Starbucks",
+                            painter = painterResource(id = R.drawable.pollo6),
+                            contentDescription = "Logo Campero",
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(shape = RoundedCornerShape(18.dp))
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
-                            text = "Starbucks",
+                            text = "Pollo Campero",
                             fontSize = 20.sp,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Image(
-                            painter = painterResource(id = R.drawable.starbucks3),
-                            contentDescription = "Café Starbucks",
+                            painter = painterResource(id = R.drawable.pollo5),
+                            contentDescription = "Restaurant Campero",
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(shape = RoundedCornerShape(45.dp))
+                                .clickable(onClick = {
+                                    navController.navigate(
+                                        ScreenRoute.PhotosPC.route
+                                    )
+                                })
+
                         )
                     }
 
@@ -172,7 +188,7 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                 }
 
                 item {
-                    RatingSummaryStarbucks(ratings = ratings)
+                    RatingSummary(ratings = ratings)
                 }
 
                 item {
@@ -184,21 +200,21 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
 
                 // Mostrar comentarios guardados
                 items(commentsAndRatings) { (comment, rating) ->
-                    CommentWithLikeCounterStarbucks(
+                    CommentWithLikeCounterCampero(
                         context = context,
                         username = "username_example",
                         comment = comment,
                         rating = rating,
                         onRatingChanged = { newRating ->
                             ratings[newRating] = ratings.getOrDefault(newRating, 0) + 1
-                            saveRatingStarbucks(context, "username_example", newRating)
+                            saveRatingCampero(context, "username_example", newRating)
                         }
                     )
                 }
 
                 item {
                     Button(onClick = {
-                        clearCommentsStarbucks(context)
+                        clearCommentsCampero(context)
                         commentsAndRatings.clear()
                     }) {
                         Text(text = "Eliminar todos los comentarios")
@@ -209,11 +225,11 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
     )
 
     if (showCommentDialog) {
-        AddCommentDialogStarbucks(
+        AddCommentDialogCampero(
             onDismiss = { showCommentDialog = false },
             onSave = { comment, rating ->
                 commentsAndRatings.add(Pair(comment, rating))
-                saveCommentAndRatingStarbucks(context, comment, rating)
+                saveCommentAndRatingCampero(context, comment, rating)
                 ratings[rating] = ratings.getOrDefault(rating, 0) + 1
                 showCommentDialog = false
             }
@@ -222,7 +238,7 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
 }
 
 @Composable
-fun AddCommentDialogStarbucks(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
+fun AddCommentDialogCampero(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
     var commentText by remember { mutableStateOf("") }
     var rating by remember { mutableStateOf(0) }
 
@@ -237,7 +253,7 @@ fun AddCommentDialogStarbucks(onDismiss: () -> Unit, onSave: (String, Int) -> Un
                     label = { Text(text = "Escribe tu comentario") }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                StarRatingStarbucks(
+                StarRatingCampero(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     rating = rating,
                     onRatingChanged = { newRating ->
@@ -264,7 +280,7 @@ fun AddCommentDialogStarbucks(onDismiss: () -> Unit, onSave: (String, Int) -> Un
 }
 
 @Composable
-fun StarRatingStarbucks(
+fun StarRatingCampero(
     modifier: Modifier = Modifier,
     starCount: Int = 5,
     rating: Int = 0,
@@ -290,15 +306,16 @@ fun StarRatingStarbucks(
     }
 }
 
+
 @Composable
-fun CommentWithLikeCounterStarbucks(
+fun CommentWithLikeCounterCampero(
     context: Context,
     username: String,
     comment: String,
     rating: Int,
     onRatingChanged: (Int) -> Unit
 ) {
-    var liked by remember { mutableStateOf(loadLikeStateStarbucks(context, username)) }
+    var liked by remember { mutableStateOf(loadLikeStateCampero(context, username)) }
     var likeCount by remember { mutableStateOf(if (liked) 1 else 0) }
 
     Card(
@@ -315,7 +332,7 @@ fun CommentWithLikeCounterStarbucks(
                 fontSize = 18.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            StarRatingStarbucks(
+            StarRatingCampero(
                 modifier = Modifier.align(Alignment.Start),
                 rating = rating,
                 onRatingChanged = onRatingChanged
@@ -331,22 +348,23 @@ fun CommentWithLikeCounterStarbucks(
                         .clickable {
                             liked = !liked
                             likeCount += if (liked) 1 else -1
-                            saveLikeStateStarbucks(context, username, liked)
+                            saveLikeStateCampero(context, username, liked)
                         }
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = likeCount.toString(),
-                    fontSize = 16.sp,
-                    color = if (liked) Color.Red else Color.Gray
-                )
+                /*Text(
+                text = likeCount.toString(),
+                fontSize = 16.sp,
+                color = if (liked) Color.Red else Color.Gray
+                )*/
+
             }
         }
     }
 }
 
 @Composable
-fun RatingSummaryStarbucks(
+fun RatingSummary(
     ratings: Map<Int, Int> // Un mapa donde la clave es el número de estrellas y el valor es la cantidad de calificaciones
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
@@ -404,8 +422,8 @@ fun RatingSummaryStarbucks(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewCommentScreenStarbucks() {
+fun PreviewCommentScreenCampero() {
     val viewModel = MainViewModel()
     val navController = rememberNavController()
-    CommentScreenStarbucks(viewModel, navController)
+    CommentScreenCampero(viewModel, navController)
 }

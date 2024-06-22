@@ -10,10 +10,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.profile.MainViewModel
 import com.example.profile.R
 
 @Composable
-fun PhotosCampero() {
+fun PhotosBurguer(viewModel: MainViewModel,
+                  navController: NavController,
+                  modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -23,7 +27,7 @@ fun PhotosCampero() {
 
         // Imagen central
         Image(
-            painter = painterResource(id = R.drawable.pollocampero),
+            painter = painterResource(id = R.drawable.burgerking),
             contentDescription = "Imagen",
             modifier = Modifier
                 .fillMaxWidth(0.6f)
@@ -41,14 +45,14 @@ fun PhotosCampero() {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Image(
-                painter = painterResource(id = R.drawable.lugarpollo), // Reemplaza con el ID real de la imagen
+                painter = painterResource(id = R.drawable.comida6), // Reemplaza con el ID real de la imagen
                 contentDescription = "Imagen adicional 1",
                 modifier = Modifier
                     .size(150.dp),
                 contentScale = ContentScale.Crop
             )
             Image(
-                painter = painterResource(id = R.drawable.restaurantpollo), // Reemplaza con el ID real de la imagen
+                painter = painterResource(id = R.drawable.comida4), // Reemplaza con el ID real de la imagen
                 contentDescription = "Imagen adicional 2",
                 modifier = Modifier
                     .size(150.dp),
@@ -65,14 +69,14 @@ fun PhotosCampero() {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Image(
-                painter = painterResource(id = R.drawable.pollo2), // Reemplaza con el ID real de la imagen
+                painter = painterResource(id = R.drawable.comida5), // Reemplaza con el ID real de la imagen
                 contentDescription = "Imagen adicional 1",
                 modifier = Modifier
                     .size(150.dp),
                 contentScale = ContentScale.Crop
             )
             Image(
-                painter = painterResource(id = R.drawable.pollo4), // Reemplaza con el ID real de la imagen
+                painter = painterResource(id = R.drawable.cajitafeliz), // Reemplaza con el ID real de la imagen
                 contentDescription = "Imagen adicional 2",
                 modifier = Modifier
                     .size(150.dp),
@@ -90,14 +94,14 @@ fun PhotosCampero() {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Image(
-                painter = painterResource(id = R.drawable.pollo5), // Reemplaza con el ID real de la imagen
+                painter = painterResource(id = R.drawable.lugar), // Reemplaza con el ID real de la imagen
                 contentDescription = "Imagen adicional 3",
                 modifier = Modifier
                     .size(150.dp),
                 contentScale = ContentScale.Crop
             )
             Image(
-                painter = painterResource(id = R.drawable.pollo6), // Reemplaza con el ID real de la imagen
+                painter = painterResource(id = R.drawable.logobk), // Reemplaza con el ID real de la imagen
                 contentDescription = "Imagen adicional 4",
                 modifier = Modifier
                     .size(150.dp),
@@ -108,9 +112,10 @@ fun PhotosCampero() {
 }
 
 
-@Preview
+
+/*@Preview
 @Composable
-fun PhotosCamperoPreview() {
-    PhotosCampero()
-}
+fun PhotosBurguerPreview() {
+   PhotosBurguer()
+}*/
 

@@ -9,13 +9,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.ui.Screen.CommentScreen
-import com.example.profile.ui.screen.FavoritesScreen
-import com.example.profile.ui.screen.HomeScreen
-import com.example.profile.ui.screen.LoginScreen
-import com.example.profile.ui.screen.ProfileScreen
-import com.example.profile.ui.screen.RegisterScreen
-import com.example.profile.ui.screen.SessionScreen
-import com.example.profile.ui.screen.SearchScreen
+import com.example.profile.ui.Screen.CommentScreenBurguer
+import com.example.profile.ui.Screen.CommentScreenStarbucks
+import com.example.profile.ui.Screen.Comments.CommentScreenCampero
+import com.example.profile.ui.Screen.Comments.PhotosBurguer
+import com.example.profile.ui.Screen.Comments.PhotosCampero
+import com.example.profile.ui.Screen.Comments.PhotosStarbucks
+import com.example.profile.ui.screen0.FavoritesScreen
+import com.example.profile.ui.screen0.HomeScreen
+import com.example.profile.ui.screen0.LoginScreen
+import com.example.profile.ui.screen0.ProfileScreen
+import com.example.profile.ui.screen0.RegisterScreen
+import com.example.profile.ui.screen0.SessionScreen
+import com.example.profile.ui.screen0.SearchScreen
 
 
 
@@ -56,6 +62,31 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         composable(route = ScreenRoute.Comment.route) {
             CommentScreen(viewModel, navController)
         }
+/**/
+        composable(route = ScreenRoute.CommentBK.route) {
+            CommentScreenBurguer(viewModel, navController)
+        }
+
+        composable(route = ScreenRoute.CommentST.route) {
+            CommentScreenStarbucks(viewModel, navController)
+        }
+
+        composable(route = ScreenRoute.CommentPC.route) {
+            CommentScreenCampero(viewModel, navController)
+        }
+
+        composable(route = ScreenRoute.PhotosBK.route) {
+            PhotosBurguer(viewModel, navController)
+        }
+
+        composable(route = ScreenRoute.PhotosST.route) {
+            PhotosStarbucks(viewModel, navController)
+        }
+
+        composable(route = ScreenRoute.PhotosPC.route) {
+            PhotosCampero(viewModel, navController)
+        }
+
 
     }
 }

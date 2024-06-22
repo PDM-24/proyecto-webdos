@@ -1,5 +1,4 @@
-
-package com.example.profile.ui.Screen.Comments
+package com.example.profile.ui.Screen
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -31,50 +30,52 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.R
+import com.example.profile.ui.navigation.ScreenRoute
 
-fun getPreferencesCampero(context: Context): SharedPreferences {
-    return context.getSharedPreferences("comment_prefs_campero", Context.MODE_PRIVATE)
+fun getPreferencesBurguer(context: Context): SharedPreferences {
+    return context.getSharedPreferences("comment_prefs_burguer", Context.MODE_PRIVATE)
 }
 
-fun saveRatingCampero(context: Context, username: String, rating: Int) {
-    val prefs = getPreferencesCampero(context)
+fun saveRatingBurguer(context: Context, username: String, rating: Int) {
+    val prefs = getPreferencesBurguer(context)
     with(prefs.edit()) {
         putInt("${username}_rating", rating)
         apply()
     }
 }
 
-fun loadRatingCampero(context: Context, username: String): Int {
-    val prefs = getPreferencesCampero(context)
+fun loadRatingBurguer(context: Context, username: String): Int {
+    val prefs = getPreferencesBurguer(context)
     return prefs.getInt("${username}_rating", 0)
 }
 
-fun saveLikeStateCampero(context: Context, username: String, liked: Boolean) {
-    val prefs = getPreferencesCampero(context)
+fun saveLikeStateBurguer(context: Context, username: String, liked: Boolean) {
+    val prefs = getPreferencesBurguer(context)
     with(prefs.edit()) {
         putBoolean("${username}_liked", liked)
         apply()
     }
 }
 
-fun loadLikeStateCampero(context: Context, username: String): Boolean {
-    val prefs = getPreferencesCampero(context)
+fun loadLikeStateBurguer(context: Context, username: String): Boolean {
+    val prefs = getPreferencesBurguer(context)
     return prefs.getBoolean("${username}_liked", false)
 }
 
-fun saveCommentAndRatingCampero(context: Context, comment: String, rating: Int) {
-    val prefs = getPreferencesCampero(context)
-    val commentsAndRatings = loadCommentsAndRatingsCampero(context).toMutableList()
+fun saveCommentAndRatingBurguer(context: Context, comment: String, rating: Int) {
+    val prefs = getPreferencesBurguer(context)
+    val commentsAndRatings = loadCommentsAndRatingsBurguer(context).toMutableList()
     commentsAndRatings.add(Pair(comment, rating)) // Agregar el comentario y la calificación juntos
-    val commentsSet = commentsAndRatings.map { "${it.first},${it.second}" }.toSet() // Convertir la lista a un conjunto
+    val commentsSet = commentsAndRatings.map { "${it.first},${it.second}" }
+        .toSet() // Convertir la lista a un conjunto
     with(prefs.edit()) {
         putStringSet("comments", commentsSet)
         apply()
     }
 }
 
-fun loadCommentsAndRatingsCampero(context: Context): List<Pair<String, Int>> {
-    val prefs = getPreferencesCampero(context)
+fun loadCommentsAndRatingsBurguer(context: Context): List<Pair<String, Int>> {
+    val prefs = getPreferencesBurguer(context)
     val commentsSet = prefs.getStringSet("comments", setOf()) ?: setOf()
     return commentsSet.map { comment ->
         val parts = comment.split(",")
@@ -82,8 +83,8 @@ fun loadCommentsAndRatingsCampero(context: Context): List<Pair<String, Int>> {
     }
 }
 
-fun clearCommentsCampero(context: Context) {
-    val prefs = getPreferencesCampero(context)
+fun clearCommentsBurguer(context: Context) {
+    val prefs = getPreferencesBurguer(context)
     with(prefs.edit()) {
         remove("comments")
         apply()
@@ -92,17 +93,24 @@ fun clearCommentsCampero(context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentScreenCampero(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier) {
+fun CommentScreenBurguer(
+    viewModel: MainViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
-    val commentsAndRatings = remember { mutableStateListOf(*loadCommentsAndRatingsCampero(context).toTypedArray()) }
-    val ratings = remember { mutableStateMapOf(
-        5 to 3,  // Ejemplo de datos, en un caso real estos se cargarían desde preferencias u otra fuente de datos
-        4 to 1,
-        3 to 0,
-        2 to 1,
-        1 to 1
-    ) }
+    val commentsAndRatings =
+        remember { mutableStateListOf(*loadCommentsAndRatingsBurguer(context).toTypedArray()) }
+    val ratings = remember {
+        mutableStateMapOf(
+            5 to 3,  // Ejemplo de datos, en un caso real estos se cargarían desde preferencias u otra fuente de datos
+            4 to 1,
+            3 to 0,
+            2 to 1,
+            1 to 1
+        )
+    }
     var showCommentDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -149,24 +157,29 @@ fun CommentScreenCampero(viewModel: MainViewModel, navController: NavController,
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
-                            painter = painterResource(id = R.drawable.pollo5),
-                            contentDescription = "Logo Campero",
+                            painter = painterResource(id = R.drawable.burgerking),
+                            contentDescription = "Logo Burguer",
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(shape = RoundedCornerShape(18.dp))
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
-                            text = "Pollo Campero",
+                            text = "Pollo Burguer",
                             fontSize = 20.sp,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Image(
-                            painter = painterResource(id = R.drawable.pollo6),
-                            contentDescription = "Restaurant Campero",
+                            painter = painterResource(id = R.drawable.lugar),
+                            contentDescription = "Restaurant Burguer",
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(shape = RoundedCornerShape(45.dp))
+                                .clickable(onClick = {
+                                    navController.navigate(
+                                        ScreenRoute.PhotosBK.route
+                                    )
+                                })
                         )
                     }
 
@@ -174,7 +187,7 @@ fun CommentScreenCampero(viewModel: MainViewModel, navController: NavController,
                 }
 
                 item {
-                    RatingSummary(ratings = ratings)
+                    RatingSummaryBurguer(ratings = ratings)
                 }
 
                 item {
@@ -186,21 +199,21 @@ fun CommentScreenCampero(viewModel: MainViewModel, navController: NavController,
 
                 // Mostrar comentarios guardados
                 items(commentsAndRatings) { (comment, rating) ->
-                    CommentWithLikeCounterCampero(
+                    CommentWithLikeCounterBurguer(
                         context = context,
                         username = "username_example",
                         comment = comment,
                         rating = rating,
                         onRatingChanged = { newRating ->
                             ratings[newRating] = ratings.getOrDefault(newRating, 0) + 1
-                            saveRatingCampero(context, "username_example", newRating)
+                            saveRatingBurguer(context, "username_example", newRating)
                         }
                     )
                 }
 
                 item {
                     Button(onClick = {
-                        clearCommentsCampero(context)
+                        clearCommentsBurguer(context)
                         commentsAndRatings.clear()
                     }) {
                         Text(text = "Eliminar todos los comentarios")
@@ -211,11 +224,11 @@ fun CommentScreenCampero(viewModel: MainViewModel, navController: NavController,
     )
 
     if (showCommentDialog) {
-        AddCommentDialogCampero(
+        AddCommentDialogBurguer(
             onDismiss = { showCommentDialog = false },
             onSave = { comment, rating ->
                 commentsAndRatings.add(Pair(comment, rating))
-                saveCommentAndRatingCampero(context, comment, rating)
+                saveCommentAndRatingBurguer(context, comment, rating)
                 ratings[rating] = ratings.getOrDefault(rating, 0) + 1
                 showCommentDialog = false
             }
@@ -224,7 +237,7 @@ fun CommentScreenCampero(viewModel: MainViewModel, navController: NavController,
 }
 
 @Composable
-fun AddCommentDialogCampero(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
+fun AddCommentDialogBurguer(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
     var commentText by remember { mutableStateOf("") }
     var rating by remember { mutableStateOf(0) }
 
@@ -239,7 +252,7 @@ fun AddCommentDialogCampero(onDismiss: () -> Unit, onSave: (String, Int) -> Unit
                     label = { Text(text = "Escribe tu comentario") }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                StarRatingCampero(
+                StarRatingBurguer(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     rating = rating,
                     onRatingChanged = { newRating ->
@@ -266,7 +279,7 @@ fun AddCommentDialogCampero(onDismiss: () -> Unit, onSave: (String, Int) -> Unit
 }
 
 @Composable
-fun StarRatingCampero(
+fun StarRatingBurguer(
     modifier: Modifier = Modifier,
     starCount: Int = 5,
     rating: Int = 0,
@@ -294,14 +307,14 @@ fun StarRatingCampero(
 
 
 @Composable
-fun CommentWithLikeCounterCampero(
+fun CommentWithLikeCounterBurguer(
     context: Context,
     username: String,
     comment: String,
     rating: Int,
     onRatingChanged: (Int) -> Unit
 ) {
-    var liked by remember { mutableStateOf(loadLikeStateCampero(context, username)) }
+    var liked by remember { mutableStateOf(loadLikeStateBurguer(context, username)) }
     var likeCount by remember { mutableStateOf(if (liked) 1 else 0) }
 
     Card(
@@ -318,7 +331,7 @@ fun CommentWithLikeCounterCampero(
                 fontSize = 18.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            StarRatingCampero(
+            StarRatingBurguer(
                 modifier = Modifier.align(Alignment.Start),
                 rating = rating,
                 onRatingChanged = onRatingChanged
@@ -334,22 +347,22 @@ fun CommentWithLikeCounterCampero(
                         .clickable {
                             liked = !liked
                             likeCount += if (liked) 1 else -1
-                            saveLikeStateCampero(context, username, liked)
+                            saveLikeStateBurguer(context, username, liked)
                         }
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(
+                /*Text(
                     text = likeCount.toString(),
                     fontSize = 16.sp,
                     color = if (liked) Color.Red else Color.Gray
-                )
+                )*/
             }
         }
     }
 }
 
 @Composable
-fun RatingSummary(
+fun RatingSummaryBurguer(
     ratings: Map<Int, Int> // Un mapa donde la clave es el número de estrellas y el valor es la cantidad de calificaciones
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
@@ -407,8 +420,9 @@ fun RatingSummary(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewCommentScreenCampero() {
+fun PreviewCommentScreenBurguer() {
     val viewModel = MainViewModel()
     val navController = rememberNavController()
-    CommentScreenCampero(viewModel, navController)
+    CommentScreenBurguer(viewModel, navController)
 }
+

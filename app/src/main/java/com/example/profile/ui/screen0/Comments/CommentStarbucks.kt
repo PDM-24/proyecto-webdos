@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,40 +29,41 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.R
+import com.example.profile.ui.navigation.ScreenRoute
 
-fun getPreferencesBurguer(context: Context): SharedPreferences {
-    return context.getSharedPreferences("comment_prefs_burguer", Context.MODE_PRIVATE)
+fun getPreferencesStarbucks(context: Context): SharedPreferences {
+    return context.getSharedPreferences("comment_prefs_starbucks", Context.MODE_PRIVATE)
 }
 
-fun saveRatingBurguer(context: Context, username: String, rating: Int) {
-    val prefs = getPreferencesBurguer(context)
+fun saveRatingStarbucks(context: Context, username: String, rating: Int) {
+    val prefs = getPreferencesStarbucks(context)
     with(prefs.edit()) {
         putInt("${username}_rating", rating)
         apply()
     }
 }
 
-fun loadRatingBurguer(context: Context, username: String): Int {
-    val prefs = getPreferencesBurguer(context)
+fun loadRatingStarbucks(context: Context, username: String): Int {
+    val prefs = getPreferencesStarbucks(context)
     return prefs.getInt("${username}_rating", 0)
 }
 
-fun saveLikeStateBurguer(context: Context, username: String, liked: Boolean) {
-    val prefs = getPreferencesBurguer(context)
+fun saveLikeStateStarbucks(context: Context, username: String, liked: Boolean) {
+    val prefs = getPreferencesStarbucks(context)
     with(prefs.edit()) {
         putBoolean("${username}_liked", liked)
         apply()
     }
 }
 
-fun loadLikeStateBurguer(context: Context, username: String): Boolean {
-    val prefs = getPreferencesBurguer(context)
+fun loadLikeStateStarbucks(context: Context, username: String): Boolean {
+    val prefs = getPreferencesStarbucks(context)
     return prefs.getBoolean("${username}_liked", false)
 }
 
-fun saveCommentAndRatingBurguer(context: Context, comment: String, rating: Int) {
-    val prefs = getPreferencesBurguer(context)
-    val commentsAndRatings = loadCommentsAndRatingsBurguer(context).toMutableList()
+fun saveCommentAndRatingStarbucks(context: Context, comment: String, rating: Int) {
+    val prefs = getPreferencesStarbucks(context)
+    val commentsAndRatings = loadCommentsAndRatingsStarbucks(context).toMutableList()
     commentsAndRatings.add(Pair(comment, rating)) // Agregar el comentario y la calificación juntos
     val commentsSet = commentsAndRatings.map { "${it.first},${it.second}" }.toSet() // Convertir la lista a un conjunto
     with(prefs.edit()) {
@@ -72,8 +72,8 @@ fun saveCommentAndRatingBurguer(context: Context, comment: String, rating: Int) 
     }
 }
 
-fun loadCommentsAndRatingsBurguer(context: Context): List<Pair<String, Int>> {
-    val prefs = getPreferencesBurguer(context)
+fun loadCommentsAndRatingsStarbucks(context: Context): List<Pair<String, Int>> {
+    val prefs = getPreferencesStarbucks(context)
     val commentsSet = prefs.getStringSet("comments", setOf()) ?: setOf()
     return commentsSet.map { comment ->
         val parts = comment.split(",")
@@ -81,8 +81,8 @@ fun loadCommentsAndRatingsBurguer(context: Context): List<Pair<String, Int>> {
     }
 }
 
-fun clearCommentsBurguer(context: Context) {
-    val prefs = getPreferencesBurguer(context)
+fun clearCommentsStarbucks(context: Context) {
+    val prefs = getPreferencesStarbucks(context)
     with(prefs.edit()) {
         remove("comments")
         apply()
@@ -91,10 +91,10 @@ fun clearCommentsBurguer(context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentScreenBurguer(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier) {
+fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
-    val commentsAndRatings = remember { mutableStateListOf(*loadCommentsAndRatingsBurguer(context).toTypedArray()) }
+    val commentsAndRatings = remember { mutableStateListOf(*loadCommentsAndRatingsStarbucks(context).toTypedArray()) }
     val ratings = remember { mutableStateMapOf(
         5 to 3,  // Ejemplo de datos, en un caso real estos se cargarían desde preferencias u otra fuente de datos
         4 to 1,
@@ -148,24 +148,28 @@ fun CommentScreenBurguer(viewModel: MainViewModel, navController: NavController,
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
-                            painter = painterResource(id = R.drawable.burgerking),
-                            contentDescription = "Logo Burguer",
+                            painter = painterResource(id = R.drawable.starbucks),
+                            contentDescription = "Logo Starbucks",
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(shape = RoundedCornerShape(18.dp))
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
-                            text = "Pollo Burguer",
+                            text = "Starbucks",
                             fontSize = 20.sp,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Image(
-                            painter = painterResource(id = R.drawable.lugar),
-                            contentDescription = "Restaurant Burguer",
+                            painter = painterResource(id = R.drawable.starbucks3),
+                            contentDescription = "Café Starbucks",
                             modifier = Modifier
                                 .size(120.dp)
-                                .clip(shape = RoundedCornerShape(45.dp))
+                                .clip(shape = RoundedCornerShape(45.dp)).clickable(onClick = {
+                                    navController.navigate(
+                                        ScreenRoute.PhotosST.route
+                                    )
+                                })
                         )
                     }
 
@@ -173,7 +177,7 @@ fun CommentScreenBurguer(viewModel: MainViewModel, navController: NavController,
                 }
 
                 item {
-                    RatingSummaryBurguer(ratings = ratings)
+                    RatingSummaryStarbucks(ratings = ratings)
                 }
 
                 item {
@@ -185,21 +189,21 @@ fun CommentScreenBurguer(viewModel: MainViewModel, navController: NavController,
 
                 // Mostrar comentarios guardados
                 items(commentsAndRatings) { (comment, rating) ->
-                    CommentWithLikeCounterBurguer(
+                    CommentWithLikeCounterStarbucks(
                         context = context,
                         username = "username_example",
                         comment = comment,
                         rating = rating,
                         onRatingChanged = { newRating ->
                             ratings[newRating] = ratings.getOrDefault(newRating, 0) + 1
-                            saveRatingBurguer(context, "username_example", newRating)
+                            saveRatingStarbucks(context, "username_example", newRating)
                         }
                     )
                 }
 
                 item {
                     Button(onClick = {
-                        clearCommentsBurguer(context)
+                        clearCommentsStarbucks(context)
                         commentsAndRatings.clear()
                     }) {
                         Text(text = "Eliminar todos los comentarios")
@@ -210,11 +214,11 @@ fun CommentScreenBurguer(viewModel: MainViewModel, navController: NavController,
     )
 
     if (showCommentDialog) {
-        AddCommentDialogBurguer(
+        AddCommentDialogStarbucks(
             onDismiss = { showCommentDialog = false },
             onSave = { comment, rating ->
                 commentsAndRatings.add(Pair(comment, rating))
-                saveCommentAndRatingBurguer(context, comment, rating)
+                saveCommentAndRatingStarbucks(context, comment, rating)
                 ratings[rating] = ratings.getOrDefault(rating, 0) + 1
                 showCommentDialog = false
             }
@@ -223,7 +227,7 @@ fun CommentScreenBurguer(viewModel: MainViewModel, navController: NavController,
 }
 
 @Composable
-fun AddCommentDialogBurguer(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
+fun AddCommentDialogStarbucks(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
     var commentText by remember { mutableStateOf("") }
     var rating by remember { mutableStateOf(0) }
 
@@ -238,7 +242,7 @@ fun AddCommentDialogBurguer(onDismiss: () -> Unit, onSave: (String, Int) -> Unit
                     label = { Text(text = "Escribe tu comentario") }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                StarRatingBurguer(
+                StarRatingStarbucks(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     rating = rating,
                     onRatingChanged = { newRating ->
@@ -265,7 +269,7 @@ fun AddCommentDialogBurguer(onDismiss: () -> Unit, onSave: (String, Int) -> Unit
 }
 
 @Composable
-fun StarRatingBurguer(
+fun StarRatingStarbucks(
     modifier: Modifier = Modifier,
     starCount: Int = 5,
     rating: Int = 0,
@@ -291,16 +295,15 @@ fun StarRatingBurguer(
     }
 }
 
-
 @Composable
-fun CommentWithLikeCounterBurguer(
+fun CommentWithLikeCounterStarbucks(
     context: Context,
     username: String,
     comment: String,
     rating: Int,
     onRatingChanged: (Int) -> Unit
 ) {
-    var liked by remember { mutableStateOf(loadLikeStateBurguer(context, username)) }
+    var liked by remember { mutableStateOf(loadLikeStateStarbucks(context, username)) }
     var likeCount by remember { mutableStateOf(if (liked) 1 else 0) }
 
     Card(
@@ -317,7 +320,7 @@ fun CommentWithLikeCounterBurguer(
                 fontSize = 18.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            StarRatingBurguer(
+            StarRatingStarbucks(
                 modifier = Modifier.align(Alignment.Start),
                 rating = rating,
                 onRatingChanged = onRatingChanged
@@ -333,22 +336,22 @@ fun CommentWithLikeCounterBurguer(
                         .clickable {
                             liked = !liked
                             likeCount += if (liked) 1 else -1
-                            saveLikeStateBurguer(context, username, liked)
+                            saveLikeStateStarbucks(context, username, liked)
                         }
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(
+                /*Text(
                     text = likeCount.toString(),
                     fontSize = 16.sp,
                     color = if (liked) Color.Red else Color.Gray
-                )
+                )*/
             }
         }
     }
 }
 
 @Composable
-fun RatingSummaryBurguer(
+fun RatingSummaryStarbucks(
     ratings: Map<Int, Int> // Un mapa donde la clave es el número de estrellas y el valor es la cantidad de calificaciones
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
@@ -406,9 +409,8 @@ fun RatingSummaryBurguer(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewCommentScreenBurguer() {
+fun PreviewCommentScreenStarbucks() {
     val viewModel = MainViewModel()
     val navController = rememberNavController()
-    CommentScreenBurguer(viewModel, navController)
+    CommentScreenStarbucks(viewModel, navController)
 }
-
