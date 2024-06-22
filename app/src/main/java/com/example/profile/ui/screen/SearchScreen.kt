@@ -71,7 +71,7 @@ fun SearchScreen(
 
     // Inicializa Places API si no está inicializado
     if (!Places.isInitialized()) {
-        Places.initialize(context.applicationContext, "AIzaSyDCAR5iX4iNFYHsHx1sew4Os51dO8geS2A")
+        Places.initialize(context.applicationContext, "YOUR_API_KEY")
     }
     val placesClient: PlacesClient = Places.createClient(context)
 
@@ -244,6 +244,8 @@ fun fetchPlaceDetails(
     callback: (Place?) -> Unit
 ) {
     val placeFields: List<Place.Field> = listOf(
+        Place.Field.NAME,
+        Place.Field.ADDRESS,
         Place.Field.BUSINESS_STATUS,
         Place.Field.CURRENT_OPENING_HOURS,
         Place.Field.ID,
@@ -287,8 +289,9 @@ fun PlaceDetailsContent(place: Place, placesClient: PlacesClient) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(text = place.name ?: "No Name")
-        Text(text = place.address ?: "No Address")
+        Text(text = place.name?: "No Name ")
+        Text(text = place.address?: "No Address")
+
         place.phoneNumber?.let {
             Text(text = "Phone: $it")
         }
@@ -299,7 +302,7 @@ fun PlaceDetailsContent(place: Place, placesClient: PlacesClient) {
             Text(text = "Rating: $it (${place.userRatingsTotal} reviews)")
         }
         place.currentOpeningHours?.let {
-            Text(text = "Open Now: ${it.weekdayText.joinToString(", ")}")
+            Text(text = "Horarios de apertura: ${it.weekdayText.joinToString(", ")}")
         }
 
         place.photoMetadatas?.firstOrNull()?.let { photoMetadata ->
