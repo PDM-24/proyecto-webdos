@@ -40,7 +40,6 @@ fun SearchBar(onSearch: (String) -> Unit) {
             .padding(top = 5.dp) // espacio entre el scaffold y el searchBar
     ) {
         Spacer(modifier = Modifier.height(14.dp)) // espacio entre el scaffold y el searchBar x2
-
         Box(
             modifier = Modifier
                 .height(46.dp)
@@ -75,6 +74,7 @@ fun SearchBar(onSearch: (String) -> Unit) {
                 ),
                 singleLine = true
             )
+
         }
     }
 }

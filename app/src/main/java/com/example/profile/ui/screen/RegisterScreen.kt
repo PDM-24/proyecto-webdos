@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.profile.MainViewModel
 import com.example.profile.UiState
-import androidx.compose.ui.ExperimentalComposeUiApi
 import com.example.profile.data.api.UserApi
 import com.example.profile.ui.component.LoadingProgressDialog
 import com.example.profile.ui.navigation.ScreenRoute
@@ -38,8 +37,25 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.profile.ui.theme.InterFontFamily
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.VisualTransformation
+import com.example.profile.R
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier) {
 
@@ -47,7 +63,9 @@ fun RegisterScreen(viewModel: MainViewModel, navController: NavController, modif
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     var confirmPassword by remember { mutableStateOf("") }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -77,129 +95,317 @@ fun RegisterScreen(viewModel: MainViewModel, navController: NavController, modif
         }
     }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(Color.White)
     ) {
-        Text(
-            text = "Register",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFFEB5757),
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-
-        OutlinedTextField(
-            value = firstName,
-            onValueChange = { firstName = it },
-            label = { Text("First Name") },
-            shape = RoundedCornerShape(50),
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        )
-
-        OutlinedTextField(
-            value = lastName,
-            onValueChange = { lastName = it },
-            label = { Text("Last Name") },
-            shape = RoundedCornerShape(50),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        )
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            placeholder = { Text("nombre.apellido@empresa.com") },
-            shape = RoundedCornerShape(50),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        )
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            shape = RoundedCornerShape(50),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        )
-
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Password Confirmation") },
-            visualTransformation = PasswordVisualTransformation(),
-            shape = RoundedCornerShape(50),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        )
-
-        if (errorMessage != null) {
+                .fillMaxSize()
+                .padding(24.dp)
+        ) {
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = errorMessage ?: "",
-                color = Color.Red,
-                modifier = Modifier.padding(vertical = 8.dp)
+                text = "Register",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.align(Alignment.Start),
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+                color = Color(0xFFEB5757),
             )
-        }
-
-        Button(
-            onClick = {
-                keyboardController?.hide()
-                if (password != confirmPassword) {
-                    errorMessage = "Passwords do not match"
-                } else {
-                    errorMessage = null
-                    Log.i("Contra",password)
-                    Log.i("Contra",confirmPassword)
-                    viewModel.createNewUser(
-                        UserApi(
-                            firstName = firstName,
-                            lastName = lastName,
-                            email = email,
-                            password = password,
-                            confirmPassword = confirmPassword
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Name",
+                modifier = Modifier.align(Alignment.Start),
+                fontFamily = InterFontFamily,
+                fontSize = 16.sp,
+                color = Color(0x9F1E1E1E),
+            )
+            OutlinedTextField(
+                value = firstName,
+                onValueChange = { firstName = it },
+                placeholder = {
+                    Text(
+                        "John",
+                        fontSize = 16.sp,
+                        fontFamily = InterFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 0.dp)
+                    )
+                },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .background(Color(0x80D9D9D9), shape = RoundedCornerShape(50)),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Gray
+                ),
+                singleLine = true
+            )
+            //Spacer(modifier = Modifier.height(5.dp))
+            Text(
+                text = "Last name",
+                modifier = Modifier.align(Alignment.Start),
+                fontFamily = InterFontFamily,
+                fontSize = 16.sp,
+                color = Color(0x9F1E1E1E),
+            )
+            OutlinedTextField(
+                value = lastName,
+                onValueChange = { lastName = it },
+                placeholder = {
+                    Text(
+                        "Doe",
+                        fontSize = 16.sp,
+                        fontFamily = InterFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 0.dp)
+                    )
+                },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .background(Color(0x80D9D9D9), shape = RoundedCornerShape(50)),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Gray
+                ),
+                singleLine = true
+            )
+            //Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "Email",
+                modifier = Modifier.align(Alignment.Start),
+                fontFamily = InterFontFamily,
+                fontSize = 16.sp,
+                color = Color(0x9F1E1E1E),
+            )
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                placeholder = {
+                    Text(
+                        "nombre.apellido@empresa.com",
+                        fontSize = 16.sp,
+                        fontFamily = InterFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 0.dp)
+                    )
+                },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .background(Color(0x80D9D9D9), shape = RoundedCornerShape(50)),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Gray
+                ),
+                singleLine = true
+            )
+            //Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "Password",
+                modifier = Modifier.align(Alignment.Start),
+                fontFamily = InterFontFamily,
+                fontSize = 16.sp,
+                color = Color(0x9F1E1E1E),
+            )
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = {
+                        passwordVisible = !passwordVisible
+                    }) {
+                        Icon(
+                            painter = if (passwordVisible)
+                                painterResource(id = R.drawable.ic_visibility_off)
+                            else
+                                painterResource(id = R.drawable.ic_visibility_on),
+                            contentDescription = "",
+                            tint = Color.Gray
                         )
+                    }
+                },
+                placeholder = {
+                    Text(
+                        "********",
+                        fontSize = 16.sp,
+                        fontFamily = InterFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 0.dp)
+                    )
+                },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .background(Color(0x80D9D9D9), shape = RoundedCornerShape(50)),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Gray
+                ),
+                singleLine = true
+            )
+            //Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "Password confirmation",
+                modifier = Modifier.align(Alignment.Start),
+                fontFamily = InterFontFamily,
+                fontSize = 16.sp,
+                color = Color(0x9F1E1E1E),
+            )
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = {
+                        confirmPasswordVisible = !confirmPasswordVisible
+                    }) {
+                        Icon(
+                            painter = if (confirmPasswordVisible)
+                                painterResource(id = R.drawable.ic_visibility_off)
+                            else
+                                painterResource(id = R.drawable.ic_visibility_on),
+                            contentDescription = "",
+                            tint = Color.Gray
+                        )
+                    }
+                },
+                placeholder = {
+                    Text(
+                        "********",
+                            fontSize = 16.sp,
+                            fontFamily = InterFontFamily,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(vertical = 0.dp)
+                        )
+                    },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .background(Color(0x80D9D9D9), shape = RoundedCornerShape(50)),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Gray
+                ),
+                singleLine = true
+            )
+
+            if (errorMessage != null) {
+                Text(
+                    text = errorMessage ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Button(
+                onClick = {
+                    keyboardController?.hide()
+                    if (password != confirmPassword) {
+                        errorMessage = "Passwords do not match"
+                    } else {
+                        errorMessage = null
+                        Log.i("Contra",password)
+                        Log.i("Contra",confirmPassword)
+                        viewModel.createNewUser(
+                            UserApi(
+                                firstName = firstName,
+                                lastName = lastName,
+                                email = email,
+                                password = password,
+                                confirmPassword = confirmPassword
+                            )
+                        )
+                    }
+                },
+                shape = RoundedCornerShape(50),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF6A0A0)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+            ) {
+                Text(
+                    text = "Register",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontFamily = InterFontFamily,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(2.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Divider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier
+                    .padding(vertical = 12.dp)
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Already have an account?",
+                        fontSize = 16.sp,
+                        fontFamily = InterFontFamily,
+                        color = Color(0x9F1E1E1E)
+                    )
+                    Text(
+                        text = " Login",
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .clickable {
+                                navController.navigate(ScreenRoute.Login.route)
+                            },
+                        fontSize = 16.sp,
+                        fontFamily = InterFontFamily,
+                        color = Color(0xFFEB5757)
                     )
                 }
-            },
-            shape = RoundedCornerShape(50),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEB5757)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-        ) {
-            Text(text = "Register", color = Color.White)
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Already have an account?")
-            Text(
-                text = " Login",
-                color = Color(0xFFEB5757),
-                modifier = Modifier.clickable { navController.navigate(ScreenRoute.Login.route) }
-            )
+            }
         }
     }
 }
 
-fun isPasswordValid(password: String): Boolean {
-    val passwordPattern = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}\$/"
-    return password.matches(Regex(passwordPattern))
+@Preview(showBackground = true)
+@Composable
+fun RegisterScreenPreview() {
+    val navController = rememberNavController()
+    val dummyViewModel = MainViewModel()
+    RegisterScreen(viewModel = dummyViewModel, navController = navController)
 }
+
+
 
 
