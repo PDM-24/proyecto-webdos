@@ -1,4 +1,3 @@
-
 package com.example.profile.ui.Screen.Comments
 
 import android.content.Context
@@ -31,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.R
+import com.example.profile.ui.navigation.ScreenRoute
 
 fun getPreferencesCampero(context: Context): SharedPreferences {
     return context.getSharedPreferences("comment_prefs_campero", Context.MODE_PRIVATE)
@@ -66,7 +66,8 @@ fun saveCommentAndRatingCampero(context: Context, comment: String, rating: Int) 
     val prefs = getPreferencesCampero(context)
     val commentsAndRatings = loadCommentsAndRatingsCampero(context).toMutableList()
     commentsAndRatings.add(Pair(comment, rating)) // Agregar el comentario y la calificación juntos
-    val commentsSet = commentsAndRatings.map { "${it.first},${it.second}" }.toSet() // Convertir la lista a un conjunto
+    val commentsSet = commentsAndRatings.map { "${it.first},${it.second}" }
+        .toSet() // Convertir la lista a un conjunto
     with(prefs.edit()) {
         putStringSet("comments", commentsSet)
         apply()
@@ -92,17 +93,24 @@ fun clearCommentsCampero(context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentScreenCampero(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier) {
+fun CommentScreenCampero(
+    viewModel: MainViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
-    val commentsAndRatings = remember { mutableStateListOf(*loadCommentsAndRatingsCampero(context).toTypedArray()) }
-    val ratings = remember { mutableStateMapOf(
-        5 to 3,  // Ejemplo de datos, en un caso real estos se cargarían desde preferencias u otra fuente de datos
-        4 to 1,
-        3 to 0,
-        2 to 1,
-        1 to 1
-    ) }
+    val commentsAndRatings =
+        remember { mutableStateListOf(*loadCommentsAndRatingsCampero(context).toTypedArray()) }
+    val ratings = remember {
+        mutableStateMapOf(
+            5 to 3,  // Ejemplo de datos, en un caso real estos se cargarían desde preferencias u otra fuente de datos
+            4 to 1,
+            3 to 0,
+            2 to 1,
+            1 to 1
+        )
+    }
     var showCommentDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -149,7 +157,7 @@ fun CommentScreenCampero(viewModel: MainViewModel, navController: NavController,
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
-                            painter = painterResource(id = R.drawable.pollo5),
+                            painter = painterResource(id = R.drawable.pollo6),
                             contentDescription = "Logo Campero",
                             modifier = Modifier
                                 .size(120.dp)
@@ -162,11 +170,17 @@ fun CommentScreenCampero(viewModel: MainViewModel, navController: NavController,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Image(
-                            painter = painterResource(id = R.drawable.pollo6),
+                            painter = painterResource(id = R.drawable.pollo5),
                             contentDescription = "Restaurant Campero",
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(shape = RoundedCornerShape(45.dp))
+                                .clickable(onClick = {
+                                    navController.navigate(
+                                        ScreenRoute.PhotosPC.route
+                                    )
+                                })
+
                         )
                     }
 
@@ -338,11 +352,11 @@ fun CommentWithLikeCounterCampero(
                         }
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-/*Text(
-text = likeCount.toString(),
-fontSize = 16.sp,
-color = if (liked) Color.Red else Color.Gray
-)*/
+                /*Text(
+                text = likeCount.toString(),
+                fontSize = 16.sp,
+                color = if (liked) Color.Red else Color.Gray
+                )*/
 
             }
         }

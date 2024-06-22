@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.R
+import com.example.profile.ui.navigation.ScreenRoute
 
 fun getPreferencesStarbucks(context: Context): SharedPreferences {
     return context.getSharedPreferences("comment_prefs_starbucks", Context.MODE_PRIVATE)
@@ -164,7 +165,11 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                             contentDescription = "Café Starbucks",
                             modifier = Modifier
                                 .size(120.dp)
-                                .clip(shape = RoundedCornerShape(45.dp))
+                                .clip(shape = RoundedCornerShape(45.dp)).clickable(onClick = {
+                                    navController.navigate(
+                                        ScreenRoute.PhotosST.route
+                                    )
+                                })
                         )
                     }
 

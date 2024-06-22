@@ -12,6 +12,9 @@ import com.example.profile.ui.Screen.CommentScreen
 import com.example.profile.ui.Screen.CommentScreenBurguer
 import com.example.profile.ui.Screen.CommentScreenStarbucks
 import com.example.profile.ui.Screen.Comments.CommentScreenCampero
+import com.example.profile.ui.Screen.Comments.PhotosBurguer
+import com.example.profile.ui.Screen.Comments.PhotosCampero
+import com.example.profile.ui.Screen.Comments.PhotosStarbucks
 import com.example.profile.ui.screen0.FavoritesScreen
 import com.example.profile.ui.screen0.HomeScreen
 import com.example.profile.ui.screen0.LoginScreen
@@ -29,7 +32,7 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = ScreenRoute.Home.route,
+        startDestination = ScreenRoute.Session.route,
         modifier = modifier // Pasar el modifier a NavHost
     ) {
         composable(route = ScreenRoute.Session.route) {
@@ -71,6 +74,19 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         composable(route = ScreenRoute.CommentPC.route) {
             CommentScreenCampero(viewModel, navController)
         }
+
+        composable(route = ScreenRoute.PhotosBK.route) {
+            PhotosBurguer(viewModel, navController)
+        }
+
+        composable(route = ScreenRoute.PhotosST.route) {
+            PhotosStarbucks(viewModel, navController)
+        }
+
+        composable(route = ScreenRoute.PhotosPC.route) {
+            PhotosCampero(viewModel, navController)
+        }
+
 
     }
 }

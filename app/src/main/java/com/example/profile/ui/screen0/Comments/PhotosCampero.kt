@@ -10,10 +10,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.profile.MainViewModel
 import com.example.profile.R
 
 @Composable
-fun PhotosCampero() {
+fun PhotosCampero(viewModel: MainViewModel,
+                  navController: NavController,
+                  modifier: Modifier = Modifier
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,9 +113,4 @@ fun PhotosCampero() {
 }
 
 
-@Preview
-@Composable
-fun PhotosCamperoPreview() {
-    PhotosCampero()
-}
 

@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.R
+import com.example.profile.ui.navigation.ScreenRoute
 
 fun getPreferencesBurguer(context: Context): SharedPreferences {
     return context.getSharedPreferences("comment_prefs_burguer", Context.MODE_PRIVATE)
@@ -65,7 +66,8 @@ fun saveCommentAndRatingBurguer(context: Context, comment: String, rating: Int) 
     val prefs = getPreferencesBurguer(context)
     val commentsAndRatings = loadCommentsAndRatingsBurguer(context).toMutableList()
     commentsAndRatings.add(Pair(comment, rating)) // Agregar el comentario y la calificación juntos
-    val commentsSet = commentsAndRatings.map { "${it.first},${it.second}" }.toSet() // Convertir la lista a un conjunto
+    val commentsSet = commentsAndRatings.map { "${it.first},${it.second}" }
+        .toSet() // Convertir la lista a un conjunto
     with(prefs.edit()) {
         putStringSet("comments", commentsSet)
         apply()
@@ -91,17 +93,24 @@ fun clearCommentsBurguer(context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentScreenBurguer(viewModel: MainViewModel, navController: NavController, modifier: Modifier = Modifier) {
+fun CommentScreenBurguer(
+    viewModel: MainViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
-    val commentsAndRatings = remember { mutableStateListOf(*loadCommentsAndRatingsBurguer(context).toTypedArray()) }
-    val ratings = remember { mutableStateMapOf(
-        5 to 3,  // Ejemplo de datos, en un caso real estos se cargarían desde preferencias u otra fuente de datos
-        4 to 1,
-        3 to 0,
-        2 to 1,
-        1 to 1
-    ) }
+    val commentsAndRatings =
+        remember { mutableStateListOf(*loadCommentsAndRatingsBurguer(context).toTypedArray()) }
+    val ratings = remember {
+        mutableStateMapOf(
+            5 to 3,  // Ejemplo de datos, en un caso real estos se cargarían desde preferencias u otra fuente de datos
+            4 to 1,
+            3 to 0,
+            2 to 1,
+            1 to 1
+        )
+    }
     var showCommentDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -166,6 +175,11 @@ fun CommentScreenBurguer(viewModel: MainViewModel, navController: NavController,
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(shape = RoundedCornerShape(45.dp))
+                                .clickable(onClick = {
+                                    navController.navigate(
+                                        ScreenRoute.PhotosBK.route
+                                    )
+                                })
                         )
                     }
 

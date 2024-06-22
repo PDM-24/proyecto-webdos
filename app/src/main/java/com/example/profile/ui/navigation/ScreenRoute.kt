@@ -22,4 +22,11 @@ sealed class ScreenRoute(var route: String) {
 
     object CommentPC : ScreenRoute("CommentPC")
 
+    object PhotosBK : ScreenRoute("PhotosBK")
+
+    object PhotosST : ScreenRoute("PhotosST")
+
+    object PhotosPC : ScreenRoute("PhotosPC")
+
+
 }
