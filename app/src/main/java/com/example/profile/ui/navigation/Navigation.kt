@@ -1,5 +1,6 @@
 package com.example.profile.ui.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,9 +13,11 @@ import com.example.profile.ui.screen.HomeScreen
 import com.example.profile.ui.screen.LoginScreen
 import com.example.profile.ui.screen.ProfileScreen
 import com.example.profile.ui.screen.RegisterScreen
-import com.example.profile.ui.screen.SearchScreen
 import com.example.profile.ui.screen.SessionScreen
+import com.example.profile.ui.screen.SearchScreen
 
+
+@SuppressLint("NewApi")
 @Composable
 fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
     val navController = rememberNavController()
@@ -42,6 +45,8 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         composable(route = ScreenRoute.Search.route) {
             SearchScreen(viewModel, navController)
         }
+
+
         composable(route = ScreenRoute.Favorite.route) {
             FavoritesScreen(viewModel, navController)
         }

@@ -70,6 +70,14 @@ dependencies {
     implementation 'com.google.android.libraries.places:places:2.5.0'
     */
 
+    implementation(libs.androidx.benchmark.common)
+    val retrofit_version = "2.11.0"
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofit_version")
+
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

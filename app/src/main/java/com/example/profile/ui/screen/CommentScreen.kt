@@ -1,4 +1,4 @@
-package com.example.profile.ui.Screen
+package com.example.profile.ui.screen
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -17,15 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.ui.component.BottomNavigationBar
 import com.example.profile.R
@@ -303,10 +300,11 @@ suspend fun updateRatingSummary(context: Context, ratingCounts: MutableList<Int>
     ratingCounts[newRating - 1] = currentCount + 1
 }
 
-@Composable
+
+/*@Composable
 @Preview
 fun PreviewCommentScreen() {
     val navController = rememberNavController()
     val viewModel = MainViewModel()
     CommentScreen(viewModel, navController)
-}
+}*/
