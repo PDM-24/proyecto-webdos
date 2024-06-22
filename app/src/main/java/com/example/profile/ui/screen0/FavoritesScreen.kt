@@ -1,4 +1,4 @@
-package com.example.profile.ui.screen
+package com.example.profile.ui.screen0
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

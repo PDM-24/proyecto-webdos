@@ -335,11 +335,11 @@ fun CommentWithLikeCounterStarbucks(
                         }
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(
+                /*Text(
                     text = likeCount.toString(),
                     fontSize = 16.sp,
                     color = if (liked) Color.Red else Color.Gray
-                )
+                )*/
             }
         }
     }
