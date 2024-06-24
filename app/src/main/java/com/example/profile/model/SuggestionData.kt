@@ -6,5 +6,6 @@ data class SuggestionDataModel(
     val ratings: String,
     val rating: Double,
     val likeCount: Int,
-    val reviews: Int
+    val reviews: Int,
+    var isFavorite: Boolean = false // para determinar si el usuario ha guardado un restaurante en favoritos
 )

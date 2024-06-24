@@ -3,11 +3,8 @@ package com.example.profile.utils
 object Constants {
 
     // api sevice
-    const val BASE_URL = "http://192.168.1.19:3000"
+    const val BASE_URL = "http://192.168.1.15:3000"
     const val API_PATH = "/api"
-
-    //api prueba
-    const val BASE_URL2 = "http://192.168.1.15:8080"
 
     // login
     const val LOGIN_PATH = "/auth"
@@ -23,6 +20,7 @@ object Constants {
 
     // post new comment
     const val POST_NEW_COMMENT_PATH = "/"
+    const val POST_NEW_COMMENT_IDENTIFIER_PATH = "/:{identifier}"
 
     // get comment by id
     const val GET_COMMENT_BY_ID_PATH = "/:id"

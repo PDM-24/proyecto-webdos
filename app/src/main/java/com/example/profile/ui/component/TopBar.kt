@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -57,8 +58,8 @@ fun TopBar(
                             .padding(start = 12.dp)
                             .fillMaxHeight()
                             .clickable { navController.popBackStack() },
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "Menú",
+                        imageVector = Icons.Default.ArrowBackIosNew,
+                        contentDescription = "Atrás",
                         tint = Color.White
                     )
                 }

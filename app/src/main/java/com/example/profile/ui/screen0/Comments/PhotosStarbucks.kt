@@ -15,9 +15,6 @@ import com.example.profile.MainViewModel
 import com.example.profile.R
 
 
-
-
-
 @Composable
 fun PhotosStarbucks(viewModel: MainViewModel,
                     navController: NavController,
