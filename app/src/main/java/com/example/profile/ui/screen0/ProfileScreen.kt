@@ -18,10 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.profile.MainViewModel
 import com.example.profile.ui.component.BottomNavigationBar
 import com.example.profile.ui.component.TopBar
+import com.example.profile.ui.navigation.ScreenRoute
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -43,7 +45,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavHostController) {
         ) {
             ProfileHeader()
             Spacer(modifier = Modifier.height(20.dp))
-            ProfileContent(modifier = Modifier.weight(1f)) // Ajustar para ocupar el espacio disponible
+            ProfileContent(modifier = Modifier.weight(1f),navController) // Ajustar para ocupar el espacio disponible
         }
     }
 }
@@ -70,14 +72,14 @@ fun ProfileHeader() {
 }
 
 @Composable
-fun ProfileContent(modifier: Modifier = Modifier) {
+fun ProfileContent(modifier: Modifier = Modifier,navController: NavController) {
     Column(modifier = modifier.padding(24.dp)) {
         ProfileOption("Username", "Change username")
         ProfileOption("Email", "example@example.com")
         //ProfileOption("Notifications", "Enable notifications")
         Spacer(modifier = Modifier.weight(1f)) // Esto hará que los botones ocupen el espacio disponible
         Button(
-            onClick = { /* perform log out */ },
+            onClick = { navController.navigate(ScreenRoute.Session.route) },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(Color(0xFFEB445B))
         ) {
