@@ -32,7 +32,7 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 
     NavHost(
         navController = navController,
-        startDestination = ScreenRoute.Home.route,
+        startDestination = ScreenRoute.Session.route,
         modifier = modifier // Pasar el modifier a NavHost
     ) {
         composable(route = ScreenRoute.Session.route) {
