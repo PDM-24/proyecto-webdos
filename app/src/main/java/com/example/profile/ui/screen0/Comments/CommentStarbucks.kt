@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
@@ -29,7 +30,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.R
+import com.example.profile.ui.component.BottomNavigationBar
 import com.example.profile.ui.navigation.ScreenRoute
+import com.example.profile.ui.theme.InterFontFamily
 
 fun getPreferencesStarbucks(context: Context): SharedPreferences {
     return context.getSharedPreferences("comment_prefs_starbucks", Context.MODE_PRIVATE)
@@ -112,15 +115,21 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                 },
                 navigationIcon = {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.Filled.ArrowBackIosNew,
                         contentDescription = "Back",
-                        tint = Color.Red,
+                        tint = Color(0xFFEB445B),
                         modifier = Modifier
                             .clickable { navController.popBackStack() }
                             .padding(5.dp)
                     )
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                )
             )
+        },
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
         },
         content = { innerPadding ->
             LazyColumn(
@@ -137,7 +146,7 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                     // Texto "Comments" después del espaciado
                     Text(
                         text = "Comments",
-                        color = Color.Red,
+                        color = Color(0xFFEB445B),
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 1.dp)
@@ -158,6 +167,8 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                         Text(
                             text = "Starbucks",
                             fontSize = 20.sp,
+                            color = Color.DarkGray,
+                            fontFamily = InterFontFamily
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Image(
@@ -181,9 +192,31 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                 }
 
                 item {
-                    // Botón para añadir un comentario
-                    Button(onClick = { showCommentDialog = true }) {
-                        Text(text = "Añadir comentario")
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Botón para añadir un comentario
+                        Button(
+                            onClick = { showCommentDialog = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                        ) {
+                            Text(text = "Añadir comentario", color = Color.Gray)
+                        }
+
+                        // Botón para eliminar todos los comentarios
+                        Button(
+                            onClick = {
+                                clearCommentsBurguer(context)
+                                commentsAndRatings.clear()
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                        ) {
+                            Text(text = "Eliminar comentarios", color = Color.Gray)
+                        }
                     }
                 }
 
@@ -199,15 +232,6 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                             saveRatingStarbucks(context, "username_example", newRating)
                         }
                     )
-                }
-
-                item {
-                    Button(onClick = {
-                        clearCommentsStarbucks(context)
-                        commentsAndRatings.clear()
-                    }) {
-                        Text(text = "Eliminar todos los comentarios")
-                    }
                 }
             }
         }
@@ -256,13 +280,15 @@ fun AddCommentDialogStarbucks(onDismiss: () -> Unit, onSave: (String, Int) -> Un
                 onSave(commentText, rating)
                 commentText = ""
                 rating = 0
-            }) {
-                Text(text = "Guardar comentario")
+            },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Gray))
+            {
+                Text(text = "Guardar comentario", color = Color.White)
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
-                Text(text = "Cancelar")
+            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)) {
+                Text(text = "Cancelar", color = Color.White)
             }
         }
     )
@@ -282,7 +308,7 @@ fun StarRatingStarbucks(
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = if (i <= rating) "Filled Star" else "Empty Star",
-                tint = if (i <= rating) Color.Yellow else Color.Gray,
+                tint = if (i <= rating) Color(0xFFFFC700) else Color.Gray,
                 modifier = Modifier
                     .size(36.dp) // Tamaño más grande para mejor visualización
                     .padding(4.dp) // Espaciado entre las estrellas
@@ -309,7 +335,8 @@ fun CommentWithLikeCounterStarbucks(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
             modifier = Modifier
@@ -318,7 +345,8 @@ fun CommentWithLikeCounterStarbucks(
             Text(
                 text = comment,
                 fontSize = 18.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 8.dp),
+                color = Color.DarkGray
             )
             StarRatingStarbucks(
                 modifier = Modifier.align(Alignment.Start),
@@ -354,7 +382,8 @@ fun CommentWithLikeCounterStarbucks(
 fun RatingSummaryStarbucks(
     ratings: Map<Int, Int> // Un mapa donde la clave es el número de estrellas y el valor es la cantidad de calificaciones
 ) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp)
+    ) {
         // Mostrar la calificación promedio
         val totalRatings = ratings.values.sum()
         val averageRating = if (totalRatings > 0) {
@@ -366,7 +395,8 @@ fun RatingSummaryStarbucks(
         Text(
             text = String.format("%.1f", averageRating),
             fontSize = 40.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.DarkGray
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -377,7 +407,7 @@ fun RatingSummaryStarbucks(
                 Icon(
                     imageVector = Icons.Filled.Star,
                     contentDescription = "Star",
-                    tint = if (averageRating >= starRating) Color.Yellow else Color.Gray,
+                    tint = if (averageRating >= starRating) Color(0xFFFFC700) else Color.Gray,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -387,20 +417,21 @@ fun RatingSummaryStarbucks(
 
         ratings.toSortedMap(reverseOrder()).forEach { (stars, count) ->
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "$stars ")
+                Text(text = "$stars ", color = Color.DarkGray)
                 Icon(
                     imageVector = Icons.Filled.Star,
                     contentDescription = "$stars stars",
-                    tint = Color.Yellow,
+                    tint = Color(0xFFFFC700),
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 LinearProgressIndicator(
                     progress = count / totalRatings.toFloat(),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    color = Color(0xFFF6A0A0)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "$count")
+                Text(text = "$count", color = Color.DarkGray)
             }
             Spacer(modifier = Modifier.height(4.dp))
         }

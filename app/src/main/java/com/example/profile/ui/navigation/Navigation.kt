@@ -56,7 +56,7 @@ fun Navigation(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 
 
         composable(route = ScreenRoute.Favorite.route) {
-            FavoritesScreen(viewModel, navController)
+            FavoritesScreen(viewModel, navController,innerPadding = PaddingValues())
         }
 
         composable(route = ScreenRoute.Comment.route) {
