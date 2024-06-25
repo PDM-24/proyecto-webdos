@@ -61,6 +61,9 @@ fun SearchScreen(
     val markerIcon = remember {
         mutableStateOf<BitmapDescriptor?>(null)
     }
+    val currentLocationMarkerIcon = remember {
+        mutableStateOf<BitmapDescriptor?>(null)
+    }
 
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
     var selectedPlaceDetails by remember { mutableStateOf<Place?>(null) }
@@ -68,7 +71,7 @@ fun SearchScreen(
 
     // Inicializa Places API si no está inicializado
     if (!Places.isInitialized()) {
-        Places.initialize(context.applicationContext, "YOUR_API_KEY")
+        Places.initialize(context.applicationContext, "AIzaSyDCAR5iX4iNFYHsHx1sew4Os51dO8geS2A")
     }
     val placesClient: PlacesClient = Places.createClient(context)
 
@@ -93,6 +96,7 @@ fun SearchScreen(
     LaunchedEffect(Unit) {
         MapsInitializer.initialize(context)
         markerIcon.value = bitmapDescriptorFromVector(context, R.drawable.vector_sabormap)
+        currentLocationMarkerIcon.value = bitmapDescriptorFromVector(context, R.drawable.vector)
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLastLocation(fusedLocationClient) { location ->
@@ -136,7 +140,7 @@ fun SearchScreen(
                         zoomControlsEnabled = false // Esta línea oculta los botones de zoom
                     )
                 ) {
-                    MyLocationOverlay()
+                    MyLocationOverlay(currentLocationMarkerIcon.value)
                     places.forEach { place ->
                         place.latLng?.let { latLng ->
                             Marker(
@@ -165,7 +169,7 @@ fun SearchScreen(
 }
 
 @Composable
-fun MyLocationOverlay() {
+fun MyLocationOverlay(currentLocationMarkerIcon: BitmapDescriptor?) {
     val context = LocalContext.current
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     var myLocation by remember { mutableStateOf<LatLng?>(null) }
@@ -187,6 +191,11 @@ fun MyLocationOverlay() {
             strokeColor = Color(0x220000FF),
             radius = 259.0, // Radio en metros
             strokeWidth = 2f
+        )
+        Marker(
+            state = rememberMarkerState(position = location),
+            title = "You are here",
+            icon = currentLocationMarkerIcon
         )
     }
 }
