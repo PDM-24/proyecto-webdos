@@ -207,7 +207,7 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                             Text(text = "Añadir comentario", color = Color.Gray)
                         }
 
-                        // Botón para eliminar todos los comentarios
+                        /*// Botón para eliminar todos los comentarios
                         Button(
                             onClick = {
                                 clearCommentsBurguer(context)
@@ -216,7 +216,7 @@ fun CommentScreenStarbucks(viewModel: MainViewModel, navController: NavControlle
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                         ) {
                             Text(text = "Eliminar comentarios", color = Color.Gray)
-                        }
+                        }*/
                     }
                 }
 
