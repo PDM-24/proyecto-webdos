@@ -1,0 +1,45 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const commentSchema = new Schema({
+    comentario: {
+        type: String,
+        required: true,
+    },
+    hidden: {
+        type: Boolean,
+        default: false,
+    },
+    username: {
+        type: Schema.Types.ObjectId,
+        ref: 'User', // Referencia al modelo de usuario
+        required: true,
+    },
+    Me_gusta: {
+        type: [Schema.Types.ObjectId],
+        ref: 'User', 
+        default: [],
+    },
+    comentarios: [{
+        username: {
+            type: Schema.Types.ObjectId,
+            ref: 'User', 
+            required: true,
+        },
+        contenido: {
+            type: String,
+            required: true,
+        },
+        timestamps: {
+            type: Date,
+            default: Date.now,
+            required: true,
+        },
+        historial: {
+            type: [String],
+            default: [],
+        },
+    }],
+}, { timestamps: true });
+
+module.exports = mongoose.model('Comment', commentSchema);
