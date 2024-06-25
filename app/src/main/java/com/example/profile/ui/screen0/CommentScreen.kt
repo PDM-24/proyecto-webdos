@@ -184,10 +184,31 @@ fun CommentScreen(viewModel: MainViewModel, navController: NavController, modifi
                 }
 
                 item {
-                    // Botón para añadir un comentario
-                    Button(onClick = { showCommentDialog = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
-                        Text(text = "Añadir comentario", color = Color.Gray)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Botón para añadir un comentario
+                        Button(
+                            onClick = { showCommentDialog = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                        ) {
+                            Text(text = "Añadir comentario", color = Color.Gray)
+                        }
+
+                        // Botón para eliminar todos los comentarios
+                        Button(
+                            onClick = {
+                                clearCommentsBurguer(context)
+                                commentsAndRatings.clear()
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                        ) {
+                            Text(text = "Eliminar comentarios", color = Color.Gray)
+                        }
                     }
                 }
 
@@ -205,14 +226,6 @@ fun CommentScreen(viewModel: MainViewModel, navController: NavController, modifi
                     )
                 }
 
-                item {
-                    Button(onClick = {
-                        clearComments(context)
-                        commentsAndRatings.clear()
-                    },colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
-                        Text(text = "Eliminar todos los comentarios", color = Color.Gray)
-                    }
-                }
             }
         }
     )
@@ -314,7 +327,8 @@ fun CommentWithLikeCounter(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
             modifier = Modifier
@@ -323,7 +337,8 @@ fun CommentWithLikeCounter(
             Text(
                 text = comment,
                 fontSize = 18.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 8.dp),
+                color = Color.DarkGray
             )
             StarRating(
                 modifier = Modifier.align(Alignment.Start),
@@ -372,7 +387,8 @@ fun RatingSummary(
         Text(
             text = String.format("%.1f", averageRating),
             fontSize = 40.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.DarkGray
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -393,7 +409,7 @@ fun RatingSummary(
 
         ratings.toSortedMap(reverseOrder()).forEach { (stars, count) ->
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "$stars ")
+                Text(text = "$stars ", color = Color.DarkGray)
                 Icon(
                     imageVector = Icons.Filled.Star,
                     contentDescription = "$stars stars",
@@ -407,7 +423,7 @@ fun RatingSummary(
                     color = Color(0xFFF6A0A0)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "$count")
+                Text(text = "$count", color = Color.DarkGray)
             }
             Spacer(modifier = Modifier.height(4.dp))
         }

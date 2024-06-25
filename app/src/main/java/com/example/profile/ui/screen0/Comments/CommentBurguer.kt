@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
@@ -20,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +29,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.profile.MainViewModel
 import com.example.profile.R
+import com.example.profile.ui.component.BottomNavigationBar
 import com.example.profile.ui.navigation.ScreenRoute
 import com.example.profile.ui.theme.InterFontFamily
 
@@ -92,7 +91,6 @@ fun clearCommentsBurguer(context: Context) {
         apply()
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentScreenBurguer(
@@ -135,6 +133,9 @@ fun CommentScreenBurguer(
                     containerColor = Color.White
                 )
             )
+        },
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
         },
         content = { innerPadding ->
             LazyColumn(
@@ -198,9 +199,31 @@ fun CommentScreenBurguer(
                 }
 
                 item {
-                    // Botón para añadir un comentario
-                    Button(onClick = { showCommentDialog = true }, colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
-                        Text(text = "Añadir comentario", color = Color.Gray)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Botón para añadir un comentario
+                        Button(
+                            onClick = { showCommentDialog = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                        ) {
+                            Text(text = "Añadir comentario", color = Color.Gray)
+                        }
+
+                        // Botón para eliminar todos los comentarios
+                        Button(
+                            onClick = {
+                                clearCommentsBurguer(context)
+                                commentsAndRatings.clear()
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                        ) {
+                            Text(text = "Eliminar comentarios", color = Color.Gray)
+                        }
                     }
                 }
 
@@ -218,14 +241,6 @@ fun CommentScreenBurguer(
                     )
                 }
 
-                item {
-                    Button(onClick = {
-                        clearCommentsBurguer(context)
-                        commentsAndRatings.clear()
-                    }, colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
-                        Text(text = "Eliminar todos los comentarios", color = Color.Gray)
-                    }
-                }
             }
         }
     )
@@ -242,6 +257,7 @@ fun CommentScreenBurguer(
         )
     }
 }
+
 
 @Composable
 fun AddCommentDialogBurguer(onDismiss: () -> Unit, onSave: (String, Int) -> Unit) {
@@ -327,7 +343,8 @@ fun CommentWithLikeCounterBurguer(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
             modifier = Modifier
@@ -336,7 +353,8 @@ fun CommentWithLikeCounterBurguer(
             Text(
                 text = comment,
                 fontSize = 18.sp,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 8.dp),
+                color = Color.DarkGray
             )
             StarRatingBurguer(
                 modifier = Modifier.align(Alignment.Start),
@@ -384,7 +402,8 @@ fun RatingSummaryBurguer(
         Text(
             text = String.format("%.1f", averageRating),
             fontSize = 40.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.DarkGray
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -405,7 +424,7 @@ fun RatingSummaryBurguer(
 
         ratings.toSortedMap(reverseOrder()).forEach { (stars, count) ->
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "$stars ")
+                Text(text = "$stars ", color = Color.DarkGray)
                 Icon(
                     imageVector = Icons.Filled.Star,
                     contentDescription = "$stars stars",
@@ -419,7 +438,7 @@ fun RatingSummaryBurguer(
                     color = Color(0xFFF6A0A0)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "$count")
+                Text(text = "$count", color = Color.DarkGray)
             }
             Spacer(modifier = Modifier.height(4.dp))
         }
