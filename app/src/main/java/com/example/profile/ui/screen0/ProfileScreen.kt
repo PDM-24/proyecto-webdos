@@ -74,7 +74,7 @@ fun ProfileContent(modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(24.dp)) {
         ProfileOption("Username", "Change username")
         ProfileOption("Email", "example@example.com")
-        ProfileOption("Notifications", "Enable notifications")
+        //ProfileOption("Notifications", "Enable notifications")
         Spacer(modifier = Modifier.weight(1f)) // Esto hará que los botones ocupen el espacio disponible
         Button(
             onClick = { /* perform log out */ },

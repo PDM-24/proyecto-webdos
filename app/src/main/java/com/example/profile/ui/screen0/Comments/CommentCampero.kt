@@ -220,7 +220,7 @@ fun CommentScreenCampero(
                         }
 
                         // Botón para eliminar todos los comentarios
-                        Button(
+                        /*Button(
                             onClick = {
                                 clearCommentsBurguer(context)
                                 commentsAndRatings.clear()
@@ -228,7 +228,7 @@ fun CommentScreenCampero(
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                         ) {
                             Text(text = "Eliminar comentarios", color = Color.Gray)
-                        }
+                        }*/
                     }
                 }
 
